@@ -52,15 +52,17 @@ int fundGetDataByCode(CURL *curl, char* str, char *buf) {
     return 0;
 }
 
-int fundGetJsonObjFromBuf(char* curl_data, char* obj_str, void *Json_obj) {
+int fundGetObjFromBuf(char* curl_data, char* obj_str, char *obj_val, short Opt) {
     int num = 0;
     if (curl_data) {
         char *ptr = NULL;
         char *end = NULL;
         ptr = strstr(curl_data, obj_str);
         if (ptr) {
-            end = ptr;
             ptr += strlen(obj_str)+3;
+            if (Opt == 1)
+                ptr++;
+            end = ptr;
             char c = *ptr;
             unsigned char a = 1;
             while (*end != ';') {
@@ -68,10 +70,19 @@ int fundGetJsonObjFromBuf(char* curl_data, char* obj_str, void *Json_obj) {
                 num++;
             }
         }
-        memcpy(Json_obj, ptr, num);
+
+        num = Opt ? num-1 : num;
+        memset(obj_val, 0, num);
+        memcpy(obj_val, ptr, num);
         //printf("end:%s\n",end);
     }
     return num - 1;
+}
+
+void fundGetInfo() {
+    char *obj = (char*)malloc(1000);
+    fundGetObjFromBuf(res_buf, "fS_name", obj, 1);
+    printf("fS_name: %s\n", obj);
 }
  
 int main(int argc, char *argv[])
@@ -103,10 +114,11 @@ int main(int argc, char *argv[])
 	}
 	curl_global_cleanup();
     char * Json_obj = malloc(shift);
-    fundGetJsonObjFromBuf(res_buf, "Data_netWorthTrend", Json_obj);
-    printf("%s\n", Json_obj);
+    fundGetObjFromBuf(res_buf, "Data_netWorthTrend", Json_obj, 0);
+    //printf("%s\n", Json_obj);
     JsonParse_objectInArray(Json_obj, "y");
     //printf("%s\n", res_buf);
-
+    fundGetInfo();
+    free(Json_obj);
 	return 0;
 }

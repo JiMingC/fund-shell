@@ -37,22 +37,21 @@ cJSON* JsonParse_objectInArray(char* buf, char* name)
     printf("%d\n", size);
     cJSON *sub_json, *js_name;
     char *p = NULL;
-    int i;
-    for(i=0;i<size;i++)
-    {
-        tnode = cJSON_GetArrayItem(node,i);
+//    int i;
+//    for(i=0;i<size;i++)
+//    {
+        tnode = cJSON_GetArrayItem(node, size - 1);
         switch(tnode->type) {
             case cJSON_Object:
                 p = cJSON_PrintUnformatted(tnode);
                 sub_json = cJSON_Parse(p);
-                if (!sub_json)
-                    continue;
-                js_name;
-                js_name = cJSON_GetObjectItem(sub_json, name);
-                printf("%s is %lf\n", name, js_name->valuedouble);
+                if (sub_json) {
+                    js_name = cJSON_GetObjectItem(sub_json, name);
+                    printf("%s is %lf\n", name, js_name->valuedouble);
+                }
                 break;
         }
-    }
+//    }
     return js_name;
 }
 
