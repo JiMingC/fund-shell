@@ -1,4 +1,4 @@
-LIBS = -lm
+LIBS = -lm -lcurl
 CC = gcc
 LD = gcc
 
