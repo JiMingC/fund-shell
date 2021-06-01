@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "common.h"
 #include <curl/curl.h>
 #include <string.h>
  
@@ -8,7 +9,7 @@ ssize_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
 {
 	strcat(stream, (char *)ptr);
 	puts(stream);
-    memcpy(data_buf, (char*)stream, size*nmemb);
+//    memcpy(data_buf, (char*)stream, size*nmemb);
 	return size*nmemb;
 }
  
@@ -22,8 +23,20 @@ ssize_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
 }
 */
 
+char *res_buf = NULL;
+int shift;
+size_t copy_data(void *ptr, size_t size, size_t nmemb, void *stream) {
+    int res_size;
+
+    res_size = size * nmemb;
+    res_buf = realloc(res_buf, shift+res_size + 1);
+    memcpy(res_buf + shift, ptr, res_size);
+    shift += res_size;
+    return size * nmemb;
+}
+
 int fundGetDataByCode(CURL *curl, char* str, char *buf) {
-    char tmp_str[1024] = {0};
+    char tmp_str[2048] = {0};
     sprintf(tmp_str, "http://fund.eastmoney.com/pingzhongdata/%s.js?v=20160518155842", str);
     if (curl) {
         curl_easy_setopt(curl, CURLOPT_URL, tmp_str);
@@ -40,22 +53,23 @@ int fundGetDataByCode(CURL *curl, char* str, char *buf) {
 }
 
 int fundGetJsonObjFromBuf(char* curl_data, char* obj_str, void *Json_obj) {
+    int num = 0;
     if (curl_data) {
         char *ptr = NULL;
         char *end = NULL;
         ptr = strstr(curl_data, obj_str);
         if (ptr) {
             end = ptr;
-            ptr += strlen(obj_str)+1;
+            ptr += strlen(obj_str)+3;
             char c = *ptr;
-            int num = 0;
             unsigned char a = 1;
             while (*end != ';') {
                 end++;
                 num++;
             }
         }
-        memcpy(Json_obj, ptr, num-1);
+        memcpy(Json_obj, ptr, num);
+        //printf("end:%s\n",end);
     }
     return num - 1;
 }
@@ -80,7 +94,7 @@ int main(int argc, char *argv[])
 		curl_easy_setopt(curl2, CURLOPT_SSL_VERIFYPEER, 0);//-k
 		curl_easy_setopt(curl2, CURLOPT_SSL_VERIFYHOST, 0);//-k
 		//curl_easy_setopt(curl2, CURLOPT_VERBOSE, 1);//这是请求过程的调试log
-		curl_easy_setopt(curl2, CURLOPT_WRITEFUNCTION, write_data);//数据请求到以后的回调函数
+		curl_easy_setopt(curl2, CURLOPT_WRITEFUNCTION, copy_data);//数据请求到以后的回调函数
 		curl_easy_setopt(curl2, CURLOPT_WRITEDATA, str);//选择输出到字符串
 		//curl_easy_setopt(curl2, CURLOPT_WRITEDATA, fp2);//选择输出到文件
 		res2 = curl_easy_perform(curl2);//这里是执行请求
@@ -88,6 +102,11 @@ int main(int argc, char *argv[])
 		//fclose(fp2);
 	}
 	curl_global_cleanup();
-    printf("%s\n", data_buf);
+    char * Json_obj = malloc(shift);
+    fundGetJsonObjFromBuf(res_buf, "Data_netWorthTrend", Json_obj);
+    printf("%s\n", Json_obj);
+    JsonParse_objectInArray(Json_obj, "y");
+    //printf("%s\n", res_buf);
+
 	return 0;
 }
