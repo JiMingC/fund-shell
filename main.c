@@ -79,10 +79,17 @@ int fundGetObjFromBuf(char* curl_data, char* obj_str, char *obj_val, short Opt) 
     return num - 1;
 }
 
-void fundGetInfo() {
+void fundGetInfobyKey (char *str) {
     char *obj = (char*)malloc(1000);
-    fundGetObjFromBuf(res_buf, "fS_name", obj, 1);
-    printf("fS_name: %s\n", obj);
+    memset(obj, 0, 1000);
+    fundGetObjFromBuf(res_buf, str, obj, 1);
+    printf("%s: %s\n", str, obj);
+    free(obj);
+}
+
+void fundGetInfo() {
+    fundGetInfobyKey("fS_name");
+    fundGetInfobyKey("fS_code");
 }
  
 int main(int argc, char *argv[])
