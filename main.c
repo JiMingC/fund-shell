@@ -56,6 +56,8 @@ int curlDataToJson(char* src_buf, char* json_out) {
     char *ptr = src_buf;
     char *end = NULL;
     ptr += strlen("jsonpgz")+1;
+    if (*ptr == ')')
+        return 0;
     end = ptr;
     int num = 0;
     while(*end != ';') {
@@ -104,7 +106,7 @@ void fundGetInfobyKey (char *str) {
 }
 
 void fundPriTittle(void) {
-    printf("Code\tname\t\t\tl_val\tc_val\tgain\tupdate\n");
+    printf("Num\tCode\tname\t\t\t\tl_val\tc_val\tgain\tupdate\n");
 }
 
 #if 0
@@ -134,20 +136,30 @@ int fundGetCurlDate(CURL *curl, char* curl_addr) {
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, copy_data);//数据请求到以后的回调函数
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, str);//选择输出到字符串
     curl_easy_perform(curl);//这里是执行请求
-    curl_easy_cleanup(curl);
+    //curl_easy_cleanup(curl);
     return 0;
 }
 
-void fundGetInfo(CURL *curl) {
+static int count = 0;
+void fundGetInfoByCode(CURL *curl, char* code) {
     cJSON *js;
-    fundGetCurlDate(curl, "http://fundgz.1234567.com.cn/js/001186.js?rt=1463558676006");
+    char curl_addr[2048] = {0};
+    sprintf(curl_addr, "http://fundgz.1234567.com.cn/js/%s.js?rt=1463558676006", code);
+    fundGetCurlDate(curl, curl_addr);
     char * src_js = malloc(shift);
-    curlDataToJson(res_buf, src_js);
-    fundPriTittle();
+    int num = curlDataToJson(res_buf, src_js);
+    memset(res_buf, 0, shift);
+    shift = 0;
+    if (!num) {
+        free(src_js);
+        return;
+    }
+    printf("%3d\t", count);
+    count++;
     js = JsonParse_object(src_js, "fundcode");
     printf("%s\t", js->valuestring);
     js = JsonParse_object(src_js, "name");
-    printf("%s\t", js->valuestring);
+    printf("%-35s\t", js->valuestring);
     js = JsonParse_object(src_js, "dwjz");
     printf("%s\t", js->valuestring);
     js = JsonParse_object(src_js, "gsz");
@@ -158,6 +170,40 @@ void fundGetInfo(CURL *curl) {
     printf("%s\t", js->valuestring);
     free(src_js);
     printf("\n");
+}
+
+char* code[30] = {
+    "009791",
+    "011613",
+    "260108",
+    "007349",
+    "001475",
+    "008888",
+    "270042",
+    "010755",
+    "502010",
+    "010125",
+    "005495",
+    "008086",
+    "161725",
+    "160221",
+    "164403",
+    "100038",
+    "010198",
+    "501058",
+    "005491",
+    "502023",
+    "end",
+};
+#define CODE_NUM 30
+void fundGetInfo(CURL *curl) {
+    fundPriTittle();
+    int i = 0;
+    for(i = 0; i < CODE_NUM; i++) {
+        if (strlen(code[i]) != 6)
+            return;
+        fundGetInfoByCode(curl, code[i]);
+    }
 }
 
 int main(int argc, char *argv[])
