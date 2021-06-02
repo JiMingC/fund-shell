@@ -2,6 +2,23 @@
 #include<string.h>
 #include<stdlib.h>
 #include"cJSON.h"
+#include "common.h"
+
+cJSON* JsonParse_object(char* src_buf, char* item_name) {
+    cJSON *json = cJSON_Parse(src_buf);
+    cJSON *node = NULL;
+    //LOGD("%s\n", src_buf);
+    node = cJSON_GetObjectItem(json, item_name);
+    if(node == NULL)
+    {
+        LOGI("%s node == NULL\n", item_name);
+    }
+    else
+    {
+        LOGI("found %s node\n", item_name);
+    }
+    return node;
+}
 
 cJSON* JsonParse_objectInArray(char* buf, char* name)
 {
@@ -12,21 +29,21 @@ cJSON* JsonParse_objectInArray(char* buf, char* name)
     node = cJSON_GetObjectItem(json, name);
     if(node == NULL)
     {
-        printf("%s node == NULL\n", name);
+        LOGI("%s node == NULL\n", name);
     }
     else
     {
-        printf("found %s node\n", name);
+        LOGI("found %s node\n", name);
     }
     /*
     //判断是否有key是string的项 如果有返回1 否则返回0
     if(1 == cJSON_HasObjectItem(json, name))
     {
-        printf("found %s node\n", name);
+        LOGI("found %s node\n", name);
     }
     else
     {
-        printf("not found %s node\n", name);
+        LOGI("not found %s node\n", name);
     }
     */
     //非array类型的node 被当做array获取size的大小是未定义的行为 不要使用
@@ -34,7 +51,6 @@ cJSON* JsonParse_objectInArray(char* buf, char* name)
     
     node = cJSON_Parse(buf);
     int size = cJSON_GetArraySize(node);
-    printf("%d\n", size);
     cJSON *sub_json, *js_name;
     char *p = NULL;
 //    int i;
@@ -47,7 +63,7 @@ cJSON* JsonParse_objectInArray(char* buf, char* name)
                 sub_json = cJSON_Parse(p);
                 if (sub_json) {
                     js_name = cJSON_GetObjectItem(sub_json, name);
-                    printf("%s is %lf\n", name, js_name->valuedouble);
+                    LOGI("%s is %lf\n", name, js_name->valuedouble);
                 }
                 break;
         }
