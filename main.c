@@ -140,7 +140,7 @@ int fundGetCurlDate(CURL *curl, char* curl_addr) {
     return 0;
 }
 
-static int count = 0;
+static int count = 1;
 void fundGetInfoByCode(CURL *curl, char* code) {
     cJSON *js;
     char curl_addr[2048] = {0};
@@ -165,7 +165,7 @@ void fundGetInfoByCode(CURL *curl, char* code) {
     js = JsonParse_object(src_js, "gsz");
     printf("%s\t", js->valuestring);
     js = JsonParse_object(src_js, "gszzl");
-    printf("%s\t", js->valuestring);
+    printf("%s%%\t", js->valuestring);
     js = JsonParse_object(src_js, "gztime");
     printf("%s\t", js->valuestring);
     free(src_js);
@@ -193,6 +193,7 @@ char* code[30] = {
     "501058",
     "005491",
     "502023",
+    "501058",
     "end",
 };
 #define CODE_NUM 30
