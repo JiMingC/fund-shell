@@ -104,7 +104,7 @@ void fundGetInfobyKey (char *str) {
 }
 
 void fundPriTittle(void) {
-    printf("Code\tname\t\t\tvalue\tgain\n");
+    printf("Code\tname\t\t\tl_val\tc_val\tgain\tupdate\n");
 }
 
 #if 0
@@ -138,7 +138,7 @@ int fundGetCurlDate(CURL *curl, char* curl_addr) {
     return 0;
 }
 
-void fundGetInfo(CURL *curl, int len) {
+void fundGetInfo(CURL *curl) {
     cJSON *js;
     fundGetCurlDate(curl, "http://fundgz.1234567.com.cn/js/001186.js?rt=1463558676006");
     char * src_js = malloc(shift);
@@ -146,7 +146,18 @@ void fundGetInfo(CURL *curl, int len) {
     fundPriTittle();
     js = JsonParse_object(src_js, "fundcode");
     printf("%s\t", js->valuestring);
+    js = JsonParse_object(src_js, "name");
+    printf("%s\t", js->valuestring);
+    js = JsonParse_object(src_js, "dwjz");
+    printf("%s\t", js->valuestring);
+    js = JsonParse_object(src_js, "gsz");
+    printf("%s\t", js->valuestring);
+    js = JsonParse_object(src_js, "gszzl");
+    printf("%s\t", js->valuestring);
+    js = JsonParse_object(src_js, "gztime");
+    printf("%s\t", js->valuestring);
     free(src_js);
+    printf("\n");
 }
 
 int main(int argc, char *argv[])
@@ -160,7 +171,7 @@ int main(int argc, char *argv[])
 	static char str[20480];
 	res2 = curl_global_init(CURL_GLOBAL_ALL);
 	curl2 = curl_easy_init();
-    fundGetInfo(curl2, shift);
+    fundGetInfo(curl2);
 #if 0
 	if(curl2) 
 	{
