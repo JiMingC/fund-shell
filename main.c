@@ -243,5 +243,7 @@ int main(int argc, char *argv[])
     //printf("%s\n", res_buf);
 #endif
 	curl_global_cleanup();
+
+    sql3_test();
 	return 0;
 }

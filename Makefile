@@ -1,4 +1,4 @@
-LIBS = -lm -lcurl
+LIBS = -lm -lcurl -lsqlite3
 CC = gcc
 LD = gcc
 
@@ -7,6 +7,7 @@ SRCS = $(wildcard $(foreach S,$(SUBDIRS), $S/*.c $S/*.cpp))
 OBJS = $(SRCS:.c = .o)
 
 INCLUDES = $(foreach S,$(SUBDIRS),-I$S)
+INCLUDES += /lib/sqlite 
 CCFAGS = -g -Wall -O0 $(INCLUDES)
 
 TARGET = fund_test
