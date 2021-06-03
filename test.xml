@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fund>
-    
+    <fnode>
+        <name></name>
+        <code>009791</code>
+        <description>Two of our famous Belgian Waffles with plenty of real maple syrup</description>
+        <calories>650</calories>
+    </fnode>
+    <fnode>
+        <name></name>
+        <code>011613</code>
+    </fnode>
+    <fnode>
+        <name></name>
+        <code>260108</code>
+    </fnode>
 </fund>
