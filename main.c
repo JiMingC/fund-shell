@@ -245,5 +245,6 @@ int main(int argc, char *argv[])
 	curl_global_cleanup();
 
     sql3_test();
+    xml_test();
 	return 0;
 }
