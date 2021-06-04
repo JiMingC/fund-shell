@@ -2,7 +2,8 @@
 #include "common.h"
 #include <curl/curl.h>
 #include <string.h>
- 
+
+fundInfo_s *fundInfo;
 char data_buf[1024];
 //输出到字符串再打印到屏幕上
 ssize_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
@@ -196,6 +197,7 @@ char* code[30] = {
     "006328",
     "end",
 };
+
 #define CODE_NUM 30
 void fundGetInfo(CURL *curl) {
     fundPriTittle();
@@ -204,6 +206,16 @@ void fundGetInfo(CURL *curl) {
         if (strlen(code[i]) != 6)
             return;
         fundGetInfoByCode(curl, code[i]);
+    }
+}
+
+void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
+    fundPriTittle();
+    int i = 0;
+    for(i = 0; i < num; i++) {
+        if(strlen((a+i)->f_code) != 6)
+            return;
+        fundGetInfoByCode(curl, (a+i)->f_code);
     }
 }
 
@@ -218,7 +230,11 @@ int main(int argc, char *argv[])
 	static char str[20480];
 	res2 = curl_global_init(CURL_GLOBAL_ALL);
 	curl2 = curl_easy_init();
-    fundGetInfo(curl2);
+	curl_global_cleanup();
+    fundInfo = calloc(30, sizeof(fundInfo));
+    int f_num = xmlLoadInfo(fundInfo);
+    fundGetInfoFromXml(fundInfo, curl2, f_num);
+    //fundGetInfo(curl2);
 #if 0
 	if(curl2) 
 	{
@@ -242,9 +258,7 @@ int main(int argc, char *argv[])
     //JsonParse_objectInArray(buf_obj, "y");
     //printf("%s\n", res_buf);
 #endif
-	curl_global_cleanup();
-
-    sql3_test();
-    xml_test();
+    //sql3_test();
+    //xml_test();
 	return 0;
 }
