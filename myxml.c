@@ -16,7 +16,7 @@ void fundInfoSet(fundInfo_s *fundInfo, char *name, char* value) {
 
 int xmlLoadInfo(fundInfo_s *a) {
     int num = xmlGetNodeNum();
-    //LOGD("%d\n",num);
+    LOGD("%d\n",num);
     //a = (fundInfo_s*)calloc(num, sizeof(fundInfo_s));
 
     xmlDocPtr doc=NULL;
@@ -58,15 +58,16 @@ int xmlLoadInfo(fundInfo_s *a) {
             xmlFree(value);
             f_node = f_node->next;
         }
-        //LOGD("%s\t%s\n", (a+num)->f_name, (a+num)->f_code);
+        LOGD("%s\t%s\n", (a+num)->f_name, (a+num)->f_code);
         num++;
         cur = cur->next;
     }
 
     // release resource of xml parser in libxml2
     xmlFreeDoc(doc);
-    xmlCleanupParser();
+//    xmlCleanupParser();
 
+    LOGD("finish %d\n", num);
     return num;
 }
 

@@ -130,14 +130,14 @@ void fundGetInfo(char *buf, int len) {
 int fundGetCurlDate(CURL *curl, char* curl_addr) {
     if (!curl)
         return 1;
-	static char str[20480];
+    static char str[20480];
     curl_easy_setopt(curl, CURLOPT_URL, curl_addr);//这是请求的url
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);//-k 
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);//-k
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, copy_data);//数据请求到以后的回调函数
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, str);//选择输出到字符串
     curl_easy_perform(curl);//这里是执行请求
-    //curl_easy_cleanup(curl);
+//    curl_easy_cleanup(curl);
     return 0;
 }
 
@@ -219,6 +219,13 @@ void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
     }
 }
 
+void fundInfopri(fundInfo_s *a) {
+    int i;
+    for(i = 0; i < 30; i++) {
+        LOGD("%d:%s\n", i, (a+i)->f_code);
+    }
+}
+
 int main(int argc, char *argv[])
 {
     CURL *curl2;
@@ -230,11 +237,13 @@ int main(int argc, char *argv[])
 	static char str[20480];
 	res2 = curl_global_init(CURL_GLOBAL_ALL);
 	curl2 = curl_easy_init();
-	curl_global_cleanup();
+	//curl_global_cleanup();
     fundInfo = calloc(30, sizeof(fundInfo));
     int f_num = xmlLoadInfo(fundInfo);
-    fundGetInfoFromXml(fundInfo, curl2, f_num);
-    //fundGetInfo(curl2);
+    LOGD("%d\n", f_num);
+    //fundInfopri(fundInfo);
+    //fundGetInfoFromXml(fundInfo, curl2, f_num);
+    fundGetInfo(curl2);
 #if 0
 	if(curl2) 
 	{
