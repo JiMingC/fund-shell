@@ -9,9 +9,9 @@ void fundInfoSet(fundInfo_s *fundInfo, char *name, char* value) {
     if (!strcmp(name,"name"))
         strcpy(fundInfo->f_name, value);
 
-    //if (!strcmp(name, "holders"))
-    //    strcpy(fundInfo->holders, value, strlen(value));
-    LOGD("%s\n", value);
+    if (!strcmp(name, "holders"))
+        //strcpy(fundInfo->holders, value, strlen(value));
+        fundInfo->holders = (float)atof(value);
     if (!strcmp(name, "status"))
         strcpy(fundInfo->status, value);
     if (!strcmp(name, "code")){
@@ -20,13 +20,11 @@ void fundInfoSet(fundInfo_s *fundInfo, char *name, char* value) {
         strcpy(fundInfo->f_code, value);
         fundInfo->f_code[6]= '\0';
     }
-    LOGD("%s\n", value);
     return;
 }
 
 int xmlLoadInfo(fundInfo_s *a) {
     int num = xmlGetNodeNum();
-    LOGD("%d\n",num);
     //a = (fundInfo_s*)calloc(num, sizeof(fundInfo_s));
 
     xmlDocPtr doc=NULL;
@@ -63,15 +61,13 @@ int xmlLoadInfo(fundInfo_s *a) {
         while(f_node != NULL) {
             name=(char*)(f_node->name);
             value=(char*)xmlNodeGetContent(f_node);
-            LOGD("DEBUG: name is: %s, value is: %s\n", name, value);
+            //LOGD("DEBUG: name is: %s, value is: %s\n", name, value);
             fundInfoSet(a+num, name, value);
         //    printf("DEBUG: name is: %s, value is: %s\n", name, value);
-            LOGD("DEBUG: name is: %s, value is: %s\n", name, value);
             xmlFree(value);
             f_node = f_node->next;
 
         }
-        LOGD("%s\t%s\n", (a+num)->f_name, (a+num)->f_code);
         num++;
         cur = cur->next;
     }
@@ -80,7 +76,6 @@ int xmlLoadInfo(fundInfo_s *a) {
     xmlFreeDoc(doc);
     //xmlCleanupParser();
 
-    LOGD("finish %d\n", num);
     return num;
 }
 

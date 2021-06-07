@@ -5,6 +5,7 @@
 
 fundInfo_s fundInfo[30];
 char data_buf[1024];
+static int count = 1;
 //输出到字符串再打印到屏幕上
 ssize_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
 {
@@ -107,7 +108,16 @@ void fundGetInfobyKey (char *str) {
 }
 
 void fundPriTittle(void) {
-    printf("Num\tCode\tname\t\t\t\tl_val\tc_val\tgain\tupdate\n");
+    printf("Num\tCode\tname\t\t\t\tl_val\tc_val\tgain\tupdate\tg_val\tholders\t\tget\tstatus\n");
+}
+
+void fundPriSummart(void) {
+    int i = 0;
+    float total = 0;
+    for(i = 0; i < count; i++) {
+        total += fundInfo[i].g_val*fundInfo[i].holders;
+    }
+    printf("today total gain:%f\n", total);
 }
 
 #if 0
@@ -141,10 +151,10 @@ int fundGetCurlDate(CURL *curl, char* curl_addr) {
     return 0;
 }
 
-static int count = 1;
 void fundGetInfoByCode(CURL *curl, char* code) {
     cJSON *js;
     char curl_addr[2048] = {0};
+    //double a, b, c;
     sprintf(curl_addr, "http://fundgz.1234567.com.cn/js/%s.js?rt=1463558676006", code);
     fundGetCurlDate(curl, curl_addr);
     char * src_js = malloc(shift);
@@ -157,21 +167,24 @@ void fundGetInfoByCode(CURL *curl, char* code) {
         return;
     }
     printf("%3d\t", count);
-    count++;
     js = JsonParse_object(src_js, "fundcode");
     printf("%s\t", js->valuestring);
     js = JsonParse_object(src_js, "name");
     printf("%-35s\t", js->valuestring);
     js = JsonParse_object(src_js, "dwjz");
+    fundInfo[count - 1].l_val = (float) atof(js->valuestring);
     printf("%s\t", js->valuestring);
     js = JsonParse_object(src_js, "gsz");
+    fundInfo[count - 1].c_val = (float) atof(js->valuestring);
     printf("%s\t", js->valuestring);
+    fundInfo[count - 1].g_val = fundInfo[count - 1].c_val - fundInfo[count - 1].l_val;
     js = JsonParse_object(src_js, "gszzl");
     if(js->valuestring[0] != '-')
         printf("+");
     printf("%s%%\t", js->valuestring);
     js = JsonParse_object(src_js, "gztime");
-    printf("%s\t", js->valuestring+5);
+    printf("%s\t", js->valuestring+11);
+    count++;
     free(src_js);
     //printf("\n");
 }
@@ -221,8 +234,17 @@ void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
         if(strlen((a+i)->f_code) != 6)
             continue;
         fundGetInfoByCode(curl, (a+i)->f_code);
+        if((a+i)->g_val > 0 )
+            printf("+");
+        printf("%5.4f\t",  (a+i)->g_val);
+        printf("%8.2f\t", (a+i)->holders);
+        float tmp = (a+i)->g_val*(a+i)->holders;
+        if(tmp > 0)
+            printf("+");
+        printf("%.2f\t", tmp);
         printf("%s\n", (a+i)->status);
     }
+    fundPriSummart();
 }
 
 void fundInfopri(fundInfo_s *a) {
@@ -247,7 +269,7 @@ int main(int argc, char *argv[])
     //fundInfo = calloc(30, sizeof(fundInfo));
     int f_num = xmlLoadInfo(fundInfo);
     LOGD("%d\n", f_num);
-    fundInfopri(fundInfo);
+    //fundInfopri(fundInfo);
     fundGetInfoFromXml(fundInfo, curl2, f_num);
     //fundGetInfo(curl2);
 	curl_global_cleanup();
