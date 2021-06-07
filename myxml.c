@@ -6,11 +6,21 @@
 #define XML_FILE "test.xml"
 
 void fundInfoSet(fundInfo_s *fundInfo, char *name, char* value) {
-    if (strstr(name,"name"))
+    if (!strcmp(name,"name"))
         strcpy(fundInfo->f_name, value);
-    if (strstr(name,"code"))
-        strcpy(fundInfo->f_code, value);
 
+    //if (!strcmp(name, "holders"))
+    //    strcpy(fundInfo->holders, value, strlen(value));
+    LOGD("%s\n", value);
+    if (!strcmp(name, "status"))
+        strcpy(fundInfo->status, value);
+    if (!strcmp(name, "code")){
+        if (strlen(value) != 6)
+            return;
+        strcpy(fundInfo->f_code, value);
+        fundInfo->f_code[6]= '\0';
+    }
+    LOGD("%s\n", value);
     return;
 }
 
@@ -53,10 +63,13 @@ int xmlLoadInfo(fundInfo_s *a) {
         while(f_node != NULL) {
             name=(char*)(f_node->name);
             value=(char*)xmlNodeGetContent(f_node);
+            LOGD("DEBUG: name is: %s, value is: %s\n", name, value);
             fundInfoSet(a+num, name, value);
-            //LOGD("DEBUG: name is: %s, value is: %s\n", name, value);
+        //    printf("DEBUG: name is: %s, value is: %s\n", name, value);
+            LOGD("DEBUG: name is: %s, value is: %s\n", name, value);
             xmlFree(value);
             f_node = f_node->next;
+
         }
         LOGD("%s\t%s\n", (a+num)->f_name, (a+num)->f_code);
         num++;
@@ -65,7 +78,7 @@ int xmlLoadInfo(fundInfo_s *a) {
 
     // release resource of xml parser in libxml2
     xmlFreeDoc(doc);
-//    xmlCleanupParser();
+    //xmlCleanupParser();
 
     LOGD("finish %d\n", num);
     return num;
@@ -150,9 +163,6 @@ int xml_test() {
             value=(char*)xmlNodeGetContent(f_node);
             printf("DEBUG: name is: %s, value is: %s\n", name, value);
             xmlFree(value);
-            xmlChar* szAttr = xmlGetProp(cur,BAD_CAST "attribute");
-            printf("DEBUG: attribute is: %s\n", (char *)szAttr );
-            xmlFree(szAttr);
             f_node = f_node->next;
         }
         num++;

@@ -10,7 +10,9 @@ typedef struct fundInfo{
     float l_val;
     float c_val;
     float gain;
+    float holders;
     char* time;
+    char status[30];
 }fundInfo_s;
 
 struct fundSet {

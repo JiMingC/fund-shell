@@ -2,80 +2,104 @@
 <fund>
     <fnode>
         <name></name>
+        <code>502023</code>
+        <holders>596.30</holders>
+        <status>null</status>
+    </fnode>
+    <fnode>
+        <name></name>
         <code>009791</code>
-        <description>Tw maple syrup</description>
-        <calories>650</calories>
+        <holders>5000.13</holders>
+        <status>null</status>
     </fnode>
     <fnode>
         <name></name>
         <code>011613</code>
+        <holders>5000.00</holders>
+        <status>null</status>
     </fnode>
     <fnode>
         <name></name>
         <code>260108</code>
+        <holders>976.07</holders>
+        <status>null</status>
     </fnode>
     <fnode>
         <name></name>
         <code>007349</code>
+        <holders>1334.93</holders>
+        <status>null</status>
     </fnode>
     <fnode>
         <name></name>
         <code>001475</code>
+        <holders>2023.89</holders>
+        <status>null</status>
     </fnode>
     <fnode>
         <name></name>
         <code>008888</code>
-    </fnode>
-    <fnode>
-        <name></name>
-        <code>270042</code>
+        <holders>927.56</holders>
+        <status>null</status>
     </fnode>
     <fnode>
         <name></name>
         <code>010125</code>
+        <holders>828.98</holders>
+        <status>null</status>
     </fnode>
     <fnode>
         <name></name>
         <code>005495</code>
+        <holders>539.88</holders>
+        <status>null</status>
     </fnode>
     <fnode>
         <name></name>
         <code>008086</code>
+        <holders>2317.76</holders>
+        <status>null</status>
     </fnode>
     <fnode>
         <name></name>
         <code>161725</code>
+        <holders>100</holders>
+        <status>null</status>
     </fnode>
     <fnode>
         <name></name>
         <code>160221</code>
+        <holders>771.78</holders>
+        <status>null</status>
     </fnode>
     <fnode>
         <name></name>
         <code>164403</code>
+        <holders>601.87</holders>
+        <status>null</status>
     </fnode>
     <fnode>
         <name></name>
         <code>100038</code>
+        <holders>68.24</holders>
+        <status>null</status>
     </fnode>
     <fnode>
         <name></name>
         <code>010198</code>
+        <holders>2321.88</holders>
+        <status>null</status>
     </fnode>
     <fnode>
         <name></name>
         <code>501058</code>
+        <holders>0</holders>
+        <status>ALL-OUT</status>
     </fnode>
     <fnode>
         <name></name>
         <code>005491</code>
-    </fnode>
-    <fnode>
-        <name></name>
-        <code>502023</code>
-    </fnode>
-    <fnode>
-        <name></name>
-        <code>006328</code>
+        <holders>0</holders>
+        <status>ALL-OUT</status>
     </fnode>
 </fund>

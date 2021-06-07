@@ -3,7 +3,7 @@
 #include <curl/curl.h>
 #include <string.h>
 
-fundInfo_s *fundInfo;
+fundInfo_s fundInfo[30];
 char data_buf[1024];
 //输出到字符串再打印到屏幕上
 ssize_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
@@ -152,6 +152,7 @@ void fundGetInfoByCode(CURL *curl, char* code) {
     memset(res_buf, 0, shift);
     shift = 0;
     if (!num) {
+        LOGD("%s curl data abnormal\n", code);
         free(src_js);
         return;
     }
@@ -166,11 +167,13 @@ void fundGetInfoByCode(CURL *curl, char* code) {
     js = JsonParse_object(src_js, "gsz");
     printf("%s\t", js->valuestring);
     js = JsonParse_object(src_js, "gszzl");
+    if(js->valuestring[0] != '-')
+        printf("+");
     printf("%s%%\t", js->valuestring);
     js = JsonParse_object(src_js, "gztime");
-    printf("%s\t", js->valuestring);
+    printf("%s\t", js->valuestring+5);
     free(src_js);
-    printf("\n");
+    //printf("\n");
 }
 
 char* code[30] = {
@@ -195,6 +198,7 @@ char* code[30] = {
     "005491",
     "502023",
     "006328",
+    "501005"
     "end",
 };
 
@@ -213,9 +217,11 @@ void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
     fundPriTittle();
     int i = 0;
     for(i = 0; i < num; i++) {
+        //LOGD("%d %s\n", i, (a+i)->f_code);
         if(strlen((a+i)->f_code) != 6)
-            return;
+            continue;
         fundGetInfoByCode(curl, (a+i)->f_code);
+        printf("%s\n", (a+i)->status);
     }
 }
 
@@ -237,13 +243,14 @@ int main(int argc, char *argv[])
 	static char str[20480];
 	res2 = curl_global_init(CURL_GLOBAL_ALL);
 	curl2 = curl_easy_init();
-	//curl_global_cleanup();
-    fundInfo = calloc(30, sizeof(fundInfo));
+    //xml_test();
+    //fundInfo = calloc(30, sizeof(fundInfo));
     int f_num = xmlLoadInfo(fundInfo);
     LOGD("%d\n", f_num);
-    //fundInfopri(fundInfo);
-    //fundGetInfoFromXml(fundInfo, curl2, f_num);
-    fundGetInfo(curl2);
+    fundInfopri(fundInfo);
+    fundGetInfoFromXml(fundInfo, curl2, f_num);
+    //fundGetInfo(curl2);
+	curl_global_cleanup();
 #if 0
 	if(curl2) 
 	{
@@ -262,12 +269,7 @@ int main(int argc, char *argv[])
 		curl_easy_cleanup(curl2);
 		//fclose(fp2);
 	}
-    //fundGetObjFromBuf(res_buf, "Data_netWorthTrend", buf_obj, 0);
-    //printf("%s\n", Json_obj);
-    //JsonParse_objectInArray(buf_obj, "y");
-    //printf("%s\n", res_buf);
 #endif
     //sql3_test();
-    //xml_test();
 	return 0;
 }
