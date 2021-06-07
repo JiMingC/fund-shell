@@ -227,6 +227,7 @@ void fundGetInfo(CURL *curl) {
 }
 
 void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
+    printf("\n\n\n");
     fundPriTittle();
     int i = 0;
     for(i = 0; i < num; i++) {
@@ -270,7 +271,11 @@ int main(int argc, char *argv[])
     int f_num = xmlLoadInfo(fundInfo);
     LOGD("%d\n", f_num);
     //fundInfopri(fundInfo);
-    fundGetInfoFromXml(fundInfo, curl2, f_num);
+    while(1) {
+        fundGetInfoFromXml(fundInfo, curl2, f_num);
+        sleep(8);
+        count = 1;
+    }
     //fundGetInfo(curl2);
 	curl_global_cleanup();
 #if 0
