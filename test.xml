@@ -34,18 +34,18 @@
         <name>易方达国防军工混合</name>
         <code>001475</code>
         <holders>2023.89</holders>
-        <status>null</status>
+        <status>偏高</status>
     </fnode>
     <fnode>
         <name>华夏国证半导体芯片ETF联接C</name>
         <code>008888</code>
         <holders>2643.27</holders>
-        <status>加仓</status>
+        <status>已加仓</status>
     </fnode>
     <fnode>
         <name>兴银景气优选混合C</name>
         <code>010125</code>
-        <holders>828.98</holders>
+        <holders>3000.13</holders>
         <status>null</status>
     </fnode>
     <fnode>
@@ -61,10 +61,22 @@
         <status>null</status>
     </fnode>
     <fnode>
+        <name>易方达中证全指证券公司指数(LOF)</name>
+        <code>502010</code>
+        <holders>828.98</holders>
+        <status>null</status>
+    </fnode>
+    <fnode>
+        <name>博道睿见一年持有期混合</name>
+        <code>010755</code>
+        <holders>2964.43</holders>
+        <status>null</status>
+    </fnode>
+    <fnode>
         <name>招商中证白酒指数(LOF)A</name>
         <code>161725</code>
         <holders>100</holders>
-        <status>null</status>
+        <status>找机会进场</status>
     </fnode>
     <fnode>
         <name>国泰国证有色金属行业指数(LOF)</name>
@@ -107,5 +119,11 @@
         <code>501005</code>
         <holders>0</holders>
         <status>ALL-OUT</status>
+    </fnode>
+    <fnode>
+        <name>万家品质生活灵活配置混合</name>
+        <code>519195</code>
+        <holders>0</holders>
+        <status>找机会进场</status>
     </fnode>
 </fund>

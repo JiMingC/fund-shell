@@ -108,7 +108,7 @@ void fundGetInfobyKey (char *str) {
 }
 
 void fundPriTittle(void) {
-    printf("Num\tCode\tname\t\t\t\tl_val\tc_val\tgain\tupdate\tg_val\tholders\t\tget\tstatus\n");
+    printf("Num\tCode\tname\t\t\t\tl_val\tc_val\t  gain\t  g_val\t get\t holders\tstatus\n");
 }
 
 void fundPriSummart(void) {
@@ -180,10 +180,12 @@ void fundGetInfoByCode(CURL *curl, char* code) {
     fundInfo[count - 1].g_val = fundInfo[count - 1].c_val - fundInfo[count - 1].l_val;
     js = JsonParse_object(src_js, "gszzl");
     if(js->valuestring[0] != '-')
-        printf("+");
-    printf("%s%%\t", js->valuestring);
-    js = JsonParse_object(src_js, "gztime");
-    printf("%s\t", js->valuestring+11);
+        printf(RED"+");
+    else
+        printf(GREEN);
+    printf("%s%%\t"NONE, js->valuestring);
+    //js = JsonParse_object(src_js, "gztime");
+    //printf("%s\t", js->valuestring+11);
     count++;
     free(src_js);
     //printf("\n");
@@ -227,23 +229,33 @@ void fundGetInfo(CURL *curl) {
 }
 
 void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
-    printf("\n\n\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
     fundPriTittle();
     int i = 0;
+    char invert = 1;
     for(i = 0; i < num; i++) {
+        if (invert)
+            printf(COLOR1);
+        //else
+        //    printf(COLOR2);
         //LOGD("%d %s\n", i, (a+i)->f_code);
         if(strlen((a+i)->f_code) != 6)
             continue;
         fundGetInfoByCode(curl, (a+i)->f_code);
         if((a+i)->g_val > 0 )
-            printf("+");
+            printf(RED"+");
+        else
+            printf(GREEN);
         printf("%5.4f\t",  (a+i)->g_val);
-        printf("%8.2f\t", (a+i)->holders);
         float tmp = (a+i)->g_val*(a+i)->holders;
-        if(tmp > 0)
-            printf("+");
-        printf("%.2f\t", tmp);
+        printf("%4d\t", (int)tmp);
+        printf(NONE);
+        printf("%8.2f\t", (a+i)->holders);
         printf("%s\n", (a+i)->status);
+        invert = !invert;
+
     }
     fundPriSummart();
 }
@@ -273,7 +285,7 @@ int main(int argc, char *argv[])
     //fundInfopri(fundInfo);
     while(1) {
         fundGetInfoFromXml(fundInfo, curl2, f_num);
-        sleep(8);
+        sleep(15);
         count = 1;
     }
     //fundGetInfo(curl2);
