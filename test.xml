@@ -4,37 +4,31 @@
         <name>鹏华国证钢铁行业指数(LOF)</name>
         <code>502023</code>
         <holders>596.30</holders>
-        <status>null</status>
+        <status></status>
     </fnode>
     <fnode>
         <name>中欧创业板两年定开混合C</name>
         <code>009791</code>
         <holders>5000.13</holders>
-        <status>null</status>
+        <status></status>
     </fnode>
     <fnode>
         <name>华夏科创板50ETF联接C</name>
         <code>011613</code>
         <holders>5000.00</holders>
-        <status>null</status>
+        <status></status>
     </fnode>
     <fnode>
         <name>景顺长城新兴成长混合</name>
         <code>260108</code>
         <holders>976.07</holders>
-        <status>null</status>
+        <status></status>
     </fnode>
     <fnode>
         <name>夏科技创新混合A</name>
         <code>007349</code>
         <holders>1334.93</holders>
-        <status>null</status>
-    </fnode>
-    <fnode>
-        <name>易方达国防军工混合</name>
-        <code>001475</code>
-        <holders>2023.89</holders>
-        <status>偏高</status>
+        <status></status>
     </fnode>
     <fnode>
         <name>华夏国证半导体芯片ETF联接C</name>
@@ -46,31 +40,31 @@
         <name>兴银景气优选混合C</name>
         <code>010125</code>
         <holders>3000.13</holders>
-        <status>null</status>
+        <status></status>
     </fnode>
     <fnode>
         <name>创金合信科技成长股票A</name>
         <code>005495</code>
         <holders>539.88</holders>
-        <status>null</status>
+        <status></status>
     </fnode>
     <fnode>
         <name>华夏中证5G通信主题ETF联接A</name>
         <code>008086</code>
         <holders>2317.76</holders>
-        <status>null</status>
+        <status></status>
     </fnode>
     <fnode>
         <name>易方达中证全指证券公司指数(LOF)</name>
         <code>502010</code>
         <holders>828.98</holders>
-        <status>null</status>
+        <status></status>
     </fnode>
     <fnode>
         <name>博道睿见一年持有期混合</name>
         <code>010755</code>
         <holders>2964.43</holders>
-        <status>null</status>
+        <status></status>
     </fnode>
     <fnode>
         <name>招商中证白酒指数(LOF)A</name>
@@ -82,25 +76,25 @@
         <name>国泰国证有色金属行业指数(LOF)</name>
         <code>160221</code>
         <holders>771.78</holders>
-        <status>null</status>
+        <status></status>
     </fnode>
     <fnode>
         <name>前海开源沪港深农业混合</name>
         <code>164403</code>
         <holders>601.87</holders>
-        <status>null</status>
+        <status></status>
     </fnode>
     <fnode>
         <name>富国沪深300指数增强</name>
         <code>100038</code>
         <holders>68.24</holders>
-        <status>null</status>
+        <status></status>
     </fnode>
     <fnode>
         <name>易方达竞争优势企业混合A</name>
         <code>010198</code>
         <holders>2321.88</holders>
-        <status>null</status>
+        <status></status>
     </fnode>
     <fnode>
         <name>汇添富中证新能源汽车C</name>
@@ -119,6 +113,12 @@
         <code>501005</code>
         <holders>0</holders>
         <status>ALL-OUT</status>
+    </fnode>
+    <fnode>
+        <name>易方达国防军工混合</name>
+        <code>001475</code>
+        <holders>0</holders>
+        <status>ALL_OUT</status>
     </fnode>
     <fnode>
         <name>万家品质生活灵活配置混合</name>

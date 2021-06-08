@@ -114,6 +114,7 @@ void fundGetInfobyKey (char *str) {
 
 void fundPriTittle(void) {
     printf("Num\tCode\tname\t\t\t\tl_val\tc_val\t  gain\t  g_val\t get\t holders\tstatus\t\thistroy\n");
+    printf("-------------------------------------------------------------------------------------------------------------------------------\n");
 }
 
 void fundPriSummart(void) {
