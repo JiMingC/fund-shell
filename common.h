@@ -4,6 +4,8 @@
 #include "myjson.h"
 #include <string.h>
 
+#define HISTROY_NUM     7
+
 typedef struct fundInfo{
     char f_name[50];
     char f_code[30];
@@ -14,6 +16,7 @@ typedef struct fundInfo{
     float holders;
     char* time;
     char status[30];
+    float histroy[HISTROY_NUM];
 }fundInfo_s;
 
 struct fundSet {

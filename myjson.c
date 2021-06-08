@@ -50,27 +50,53 @@ cJSON* JsonParse_objectInArray(char* buf, char* name)
     cJSON *tnode = NULL;
     
     node = cJSON_Parse(buf);
+#if 0
     int size = cJSON_GetArraySize(node);
-    cJSON *sub_json, *js_name;
+    cJSON *sub_json;
+    //cJSON *tmp[5];
+    //ret = (cJSON*)calloc(5, sizeof(struct cJSON));
     char *p = NULL;
-//    int i;
-//    for(i=0;i<size;i++)
-//    {
-        tnode = cJSON_GetArrayItem(node, size - 1);
+    int i;
+    for(i = size - 5;i<size;i++)
+    {
+        tnode = cJSON_GetArrayItem(node, i);
         switch(tnode->type) {
             case cJSON_Object:
                 p = cJSON_PrintUnformatted(tnode);
                 sub_json = cJSON_Parse(p);
                 if (sub_json) {
-                    js_name = cJSON_GetObjectItem(sub_json, name);
-                    LOGI("%s is %lf\n", name, js_name->valuedouble);
+                    ret[i] = cJSON_GetObjectItem(sub_json, name);
+                    LOGI("%s is %lf\n", name,ret[i]->valuedouble);
                 }
                 break;
         }
-//    }
-    return js_name;
+    }
+#endif
+    return node;
 }
 
+cJSON* cJSON_GetArrayLastItem(cJSON* p, int pos, char *name) {
+    int i;
+    cJSON *js = NULL;
+    cJSON *tmp;
+    char *ptr;
+    int size = cJSON_GetArraySize(p);
+    if(p) {
+        js = cJSON_GetArrayItem(p, size - pos);
+        switch(js->type) {
+            case cJSON_Object:
+                ptr = cJSON_PrintUnformatted(js);
+                tmp = cJSON_Parse(ptr);
+                if (tmp) {
+                    js = cJSON_GetObjectItem(tmp, name);
+                    //LOGD("%s is %lf\n", name,js->valuedouble);
+                }
+                break;
+        }
+
+    }
+    return js;
+}
 int JsonParseValue(char* buf, char* obj_name)
 {
     //从缓冲区中解析出JSON结构
