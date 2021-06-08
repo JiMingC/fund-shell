@@ -34,7 +34,7 @@
         <name>华夏国证半导体芯片ETF联接C</name>
         <code>008888</code>
         <holders>2643.27</holders>
-        <status>已加仓</status>
+        <status>ADDED</status>
     </fnode>
     <fnode>
         <name>兴银景气优选混合C</name>
@@ -70,7 +70,7 @@
         <name>招商中证白酒指数(LOF)A</name>
         <code>161725</code>
         <holders>100</holders>
-        <status>找机会进场</status>
+        <status>CHANGE</status>
     </fnode>
     <fnode>
         <name>国泰国证有色金属行业指数(LOF)</name>
@@ -124,6 +124,6 @@
         <name>万家品质生活灵活配置混合</name>
         <code>519195</code>
         <holders>0</holders>
-        <status>找机会进场</status>
+        <status>CHANGE</status>
     </fnode>
 </fund>
