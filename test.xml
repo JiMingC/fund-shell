@@ -113,13 +113,6 @@
         <bid-price>0.9960</bid-price>
     </fnode>
     <fnode>
-        <name>富国高质量混合</name>
-        <code>012255</code>
-        <holders>3000.13</holders>
-        <status>NEW ADD</status>
-        <bid-price>1.0000</bid-price>
-    </fnode>
-    <fnode>
         <name>汇添富中证新能源汽车C</name>
         <code>501058</code>
         <holders>0</holders>

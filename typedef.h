@@ -33,6 +33,9 @@ do{ \
         printf("E [%3d][%s]: "info"", __LINE__,__FUNCTION__,##__VA_ARGS__);}\
 }while(0)
 
+#define LOG \
+    printf("D [%3d][%s]\n", __LINE__,__FUNCTION__);
+
 #define NONE         "\033[0m"
 #define HIGH_LIGHT   "\033[1m"
 #define SUB_LINE     "\033[4m"

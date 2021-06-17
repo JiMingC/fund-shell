@@ -129,8 +129,8 @@ void fundGetInfobyKey (char *str) {
 }
 
 void fundPriTittle(void) {
-    printf("Num\tCode\tname\t\t\t\tl_val\tc_val\t  gain\t  g_val\t get\t holders\tstatus\t\thistroy\n");
-    printf("-------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("Num\tCode\tname\t\t\t\tl_val\tc_val\t  gain\t  g_val\t get\tbid-pri  holders  total\t          histroy\n");
+    printf("---------------------------------------------------------------------------------------------------------------------------------\n");
 }
 
 void fundPriSummart(void) {
@@ -303,6 +303,7 @@ void fundGetInfo(CURL *curl) {
 void fundInitFromXml(fundInfo_s *a, CURL *curl, int num) {
     int i;
     for(i = 0; i < num; i++) {
+    LOG;
         if(strlen((a+i)->f_code) != 6)
             continue;
         fundInitByCode(curl, (a+i)->f_code, i);
@@ -342,8 +343,10 @@ void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
 
 
         printf(NONE);
-        printf("%8.2f\t", (a+i)->holders);
-        printf("%-15s\t", (a+i)->status);
+        printf("%5.4f  ", (a+i)->bid_price);
+        printf("%8.2f  ", (a+i)->holders);
+        printf("%5.1f\t", (a+i)->holders * ((a+i)->l_val - (a+i)->bid_price));
+        printf("%8s  ", (a+i)->status);
         for(j = 0; j < 7; j++) {
             if ((a+i)->histroy[j] > 0)
                 if ((a+i)->histroy[j] > 1)

@@ -16,6 +16,7 @@ typedef struct fundInfo{
     float g_val;
     float g_val_l;
     float holders;
+    float bid_price;
     char* time;
     char status[30];
     float histroy[HISTROY_NUM];

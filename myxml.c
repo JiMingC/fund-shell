@@ -12,13 +12,16 @@ void fundInfoSet(fundInfo_s *fundInfo, char *name, char* value) {
     if (!strcmp(name, "holders"))
         //strcpy(fundInfo->holders, value, strlen(value));
         fundInfo->holders = (float)atof(value);
-    if (!strcmp(name, "status"))
+    else if (!strcmp(name, "status"))
         strcpy(fundInfo->status, value);
-    if (!strcmp(name, "code")){
+    else if (!strcmp(name, "code")){
         if (strlen(value) != 6)
             return;
         strcpy(fundInfo->f_code, value);
         fundInfo->f_code[6]= '\0';
+    }
+    else if (!strcmp(name, "bid-price")) {
+        fundInfo->bid_price = (float)atof(value);
     }
     return;
 }
