@@ -69,7 +69,7 @@
     <fnode>
         <name>招商中证白酒指数(LOF)A</name>
         <code>161725</code>
-        <holders>100</holders>
+        <holders>1396.39</holders>
         <status>CHANGE</status>
     </fnode>
     <fnode>
@@ -87,7 +87,7 @@
     <fnode>
         <name>富国沪深300指数增强</name>
         <code>100038</code>
-        <holders>68.24</holders>
+        <holders>682.24</holders>
         <status></status>
     </fnode>
     <fnode>
@@ -123,6 +123,36 @@
     <fnode>
         <name>万家品质生活灵活配置混合</name>
         <code>519195</code>
+        <holders>0</holders>
+        <status>CHANGE</status>
+    </fnode>
+    <fnode>
+        <name></name>
+        <code>007465</code>
+        <holders>0</holders>
+        <status>CHANGE</status>
+    </fnode>
+    <fnode>
+        <name></name>
+        <code>005827</code>
+        <holders>0</holders>
+        <status>CHANGE</status>
+    </fnode>
+    <fnode>
+        <name></name>
+        <code>002190</code>
+        <holders>0</holders>
+        <status>CHANGE</status>
+    </fnode>
+    <fnode>
+        <name></name>
+        <code>000689</code>
+        <holders>0</holders>
+        <status>CHANGE</status>
+    </fnode>
+    <fnode>
+        <name></name>
+        <code>005940</code>
         <holders>0</holders>
         <status>CHANGE</status>
     </fnode>

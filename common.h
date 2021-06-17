@@ -2,6 +2,7 @@
 #include "typedef.h"
 #include "cJSON.h"
 #include "myjson.h"
+#include <time.h>
 #include <string.h>
 
 #define HISTROY_NUM     7
@@ -13,10 +14,12 @@ typedef struct fundInfo{
     float c_val;
     float gain;
     float g_val;
+    float g_val_l;
     float holders;
     char* time;
     char status[30];
     float histroy[HISTROY_NUM];
+    char Stock_code[10][30];
 }fundInfo_s;
 
 struct fundSet {

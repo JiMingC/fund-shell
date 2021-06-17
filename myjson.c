@@ -20,6 +20,7 @@ cJSON* JsonParse_object(char* src_buf, char* item_name) {
     return node;
 }
 
+
 cJSON* JsonParse_objectInArray(char* buf, char* name)
 {
     //从缓冲区中解析出JSON结构
@@ -75,6 +76,19 @@ cJSON* JsonParse_objectInArray(char* buf, char* name)
     return node;
 }
 
+cJSON* JsonParse_ItemInArray(cJSON* p, int idx) {
+    cJSON *js;
+    if (p) {
+        js = cJSON_GetArrayItem(p, idx);
+        switch(js->type) {
+            case cJSON_String:
+                LOGD("%d is %lf\n", idx,js->valuestring);
+                break;
+        }
+    }
+    return js;
+}
+
 cJSON* cJSON_GetArrayLastItem(cJSON* p, int pos, char *name) {
     int i;
     cJSON *js = NULL;
@@ -97,6 +111,7 @@ cJSON* cJSON_GetArrayLastItem(cJSON* p, int pos, char *name) {
     }
     return js;
 }
+
 int JsonParseValue(char* buf, char* obj_name)
 {
     //从缓冲区中解析出JSON结构

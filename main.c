@@ -3,6 +3,16 @@
 #include <curl/curl.h>
 #include <string.h>
 
+long int Get_time() {
+    time_t t;
+    time(&t);
+    //int ii = time(&t);
+    struct tm *tl;
+    tl = localtime(&t); 
+    printf("%d-%d-%d-%d-%d-%d\n",tl->tm_year+1900,tl->tm_mon,tl->tm_mday,tl->tm_hour,tl->tm_min,tl->tm_sec);
+    return t;
+}
+
 fundInfo_s fundInfo[30];
 char data_buf[1024];
 static int count = 1;
@@ -56,12 +66,18 @@ int fundGetDataByCode(CURL *curl, char* str, char *buf) {
 
 int fundGetObjFromBuf(char* curl_data, char* obj_str, char *obj_val, short Opt) {
     int num = 0;
+    int step = 3;
+    if (strstr(obj_str, "stockCodes"))
+        step = 2;
+    else if (strstr(obj_str, "Data_netWorthTrend"))
+        step = 3;
+
     if (curl_data) {
         char *ptr = NULL;
         char *end = NULL;
         ptr = strstr(curl_data, obj_str);
         if (ptr) {
-            ptr += strlen(obj_str)+3;
+            ptr += strlen(obj_str)+step;
             if (Opt == 1)
                 ptr++;
             end = ptr;
@@ -81,7 +97,7 @@ int fundGetObjFromBuf(char* curl_data, char* obj_str, char *obj_val, short Opt) 
     return num;
 }
 
-int curlDataToJson(char* src_buf, char* json_out, int Opt) {
+int curlDataToJson(char* src_buf, char* json_out, int Opt, char* obj_str) {
     if (Opt == 0) {
         char *ptr = src_buf;
         char *end = NULL;
@@ -99,7 +115,7 @@ int curlDataToJson(char* src_buf, char* json_out, int Opt) {
         memcpy(json_out, ptr, num);
         return num;
     } else if (Opt == 1) {
-        return fundGetObjFromBuf(src_buf, "Data_netWorthTrend", json_out, 0);
+        return fundGetObjFromBuf(src_buf, obj_str, json_out, 0);
     }
 }
 
@@ -162,15 +178,25 @@ void fundInitByCode(CURL *curl, char* code, int fund_idx) {
     char curl_addr[2048] = {0};
     sprintf(curl_addr, "http://fund.eastmoney.com/pingzhongdata/%s.js?v=20160518155842", code);
     fundGetCurlDate(curl, curl_addr);
-    char * src_js = malloc(shift);
-    int num = curlDataToJson(res_buf, src_js, 1);
-    memset(res_buf, 0, shift);
-    shift = 0;
+    char *src_js = malloc(shift);
+    int num = curlDataToJson(res_buf, src_js, 1, "Data_netWorthTrend");
     if (!num) {
-        LOGD("%s curl data abnormal\n", code);
+        LOGD("%s curl netWorthTrend data abnormal\n", code);
         free(src_js);
         return;
     }
+    char *stock_js = malloc(100);
+    num = curlDataToJson(res_buf, stock_js, 1, "stockCodes");
+    if (!num) {
+        LOGD("%s curl stock data abnormal\n", code);
+        free(src_js);
+        free(stock_js);
+        return;
+    }
+    //node = JsonParse_objectInArray(stock_js, NULL);
+    //JsonParse_ItemInArray(node, 1);
+    memset(res_buf, 0, shift);
+    shift = 0;
     node = JsonParse_objectInArray(src_js, "equityReturn");
     js = cJSON_GetArrayLastItem(node, 1, "equityReturn");
     fundInfo[fund_idx].histroy[6] = (float)js->valuedouble;
@@ -186,6 +212,7 @@ void fundInitByCode(CURL *curl, char* code, int fund_idx) {
     fundInfo[fund_idx].histroy[1] = (float)js->valuedouble;
     js = cJSON_GetArrayLastItem(node, 7, "equityReturn");
     fundInfo[fund_idx].histroy[0] = (float)js->valuedouble;
+    free(src_js);
 }
 
 void fundGetInfoByCode(CURL *curl, char* code) {
@@ -195,7 +222,7 @@ void fundGetInfoByCode(CURL *curl, char* code) {
     sprintf(curl_addr, "http://fundgz.1234567.com.cn/js/%s.js?rt=1463558676006", code);
     fundGetCurlDate(curl, curl_addr);
     char * src_js = malloc(shift);
-    int num = curlDataToJson(res_buf, src_js, 0);
+    int num = curlDataToJson(res_buf, src_js, 0, NULL);
     memset(res_buf, 0, shift);
     shift = 0;
     if (!num) {
@@ -214,13 +241,21 @@ void fundGetInfoByCode(CURL *curl, char* code) {
     js = JsonParse_object(src_js, "gsz");
     fundInfo[count - 1].c_val = (float) atof(js->valuestring);
     printf("%s\t", js->valuestring);
+    fundInfo[count - 1].g_val_l = fundInfo[count - 1].g_val;
     fundInfo[count - 1].g_val = fundInfo[count - 1].c_val - fundInfo[count - 1].l_val;
     js = JsonParse_object(src_js, "gszzl");
-    if(js->valuestring[0] != '-')
-        printf(RED"+");
+    float gszzl = (float) atof(js->valuestring);
+    if(gszzl > 0)
+        if (gszzl > 1)
+            printf(LIGHT_RED"+");
+        else
+            printf(RED"+");
     else
-        printf(GREEN);
-    printf("%s%%\t"NONE, js->valuestring);
+        if (gszzl < -1)
+            printf(LIGHT_GREEN);
+        else
+            printf(GREEN);
+    printf("%s%%\t", js->valuestring);
     //js = JsonParse_object(src_js, "gztime");
     //printf("%s\t", js->valuestring+11);
     count++;
@@ -291,12 +326,21 @@ void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
             continue;
         fundGetInfoByCode(curl, (a+i)->f_code);
         if((a+i)->g_val > 0 )
-            printf(RED"+");
-        else
-            printf(GREEN);
+                printf("+");
         printf("%5.4f\t",  (a+i)->g_val);
+        
         float tmp = (a+i)->g_val*(a+i)->holders;
-        printf("%4d\t", (int)tmp);
+        printf("%4d", (int)tmp);
+
+        if ((a+i)->g_val > (a+i)->g_val_l) {
+            printf(LIGHT_RED" ^\t");
+        } else if ((a+i)->g_val < (a+i)->g_val_l) {
+            printf(LIGHT_GREEN" v\t");
+        } else {
+            printf("  \t");
+        }
+
+
         printf(NONE);
         printf("%8.2f\t", (a+i)->holders);
         printf("%-15s\t", (a+i)->status);
@@ -328,6 +372,7 @@ void fundInfopri(fundInfo_s *a) {
 
 int main(int argc, char *argv[])
 {
+    LOGD("%ld\n", Get_time());
     CURL *curl;
 	CURLcode res2;
 	static char str[20480];
@@ -335,10 +380,10 @@ int main(int argc, char *argv[])
 	curl = curl_easy_init();
     //fundInfo = calloc(30, sizeof(fundInfo));
     int f_num = xmlLoadInfo(fundInfo);
-    LOGD("%d\n", f_num);
+    printf("Find %d funders, initing...\n", f_num);
     //fundInfopri(fundInfo);
     fundInitFromXml(fundInfo, curl, f_num);
-
+    printf("Finish initing\n");
     while(1) {
         fundGetInfoFromXml(fundInfo, curl, f_num);
         sleep(15);
