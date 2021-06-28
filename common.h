@@ -5,7 +5,7 @@
 #include <time.h>
 #include <string.h>
 
-#define HISTROY_NUM     7
+#define HISTROY_NUM     10
 
 typedef struct fundInfo{
     char f_name[50];

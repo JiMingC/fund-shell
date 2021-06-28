@@ -9,7 +9,7 @@ long int Get_time() {
     //int ii = time(&t);
     struct tm *tl;
     tl = localtime(&t); 
-    printf("%d-%d-%d-%d-%d-%d\n",tl->tm_year+1900,tl->tm_mon,tl->tm_mday,tl->tm_hour,tl->tm_min,tl->tm_sec);
+    printf("%d-%d-%d-%d-%d-%d\n",tl->tm_year+1900,tl->tm_mon+1,tl->tm_mday,tl->tm_hour,tl->tm_min,tl->tm_sec);
     return t;
 }
 
@@ -68,7 +68,7 @@ int fundGetObjFromBuf(char* curl_data, char* obj_str, char *obj_val, short Opt) 
     int num = 0;
     int step = 3;
     if (strstr(obj_str, "stockCodes"))
-        step = 2;
+        step = 1;
     else if (strstr(obj_str, "Data_netWorthTrend"))
         step = 3;
 
@@ -185,34 +185,54 @@ void fundInitByCode(CURL *curl, char* code, int fund_idx) {
         free(src_js);
         return;
     }
-    char *stock_js = malloc(100);
+
+    node = JsonParse_objectInArray(src_js, "equityReturn");
+    js = cJSON_GetArrayLastItem(node, 1, "equityReturn");
+    fundInfo[fund_idx].histroy[HISTROY_NUM - 1] = (float)js->valuedouble;
+    js = cJSON_GetArrayLastItem(node, 2, "equityReturn");
+    fundInfo[fund_idx].histroy[HISTROY_NUM - 2] = (float)js->valuedouble;
+    js = cJSON_GetArrayLastItem(node, 3, "equityReturn");
+    fundInfo[fund_idx].histroy[HISTROY_NUM - 3] = (float)js->valuedouble;
+    js = cJSON_GetArrayLastItem(node, 4, "equityReturn");
+    fundInfo[fund_idx].histroy[HISTROY_NUM - 4] = (float)js->valuedouble;
+    js = cJSON_GetArrayLastItem(node, 5, "equityReturn");
+    fundInfo[fund_idx].histroy[HISTROY_NUM - 5] = (float)js->valuedouble;
+    js = cJSON_GetArrayLastItem(node, 6, "equityReturn");
+    fundInfo[fund_idx].histroy[HISTROY_NUM - 6] = (float)js->valuedouble;
+    js = cJSON_GetArrayLastItem(node, 7, "equityReturn");
+    fundInfo[fund_idx].histroy[HISTROY_NUM - 7] = (float)js->valuedouble;
+    js = cJSON_GetArrayLastItem(node, 8, "equityReturn");
+    fundInfo[fund_idx].histroy[HISTROY_NUM - 8] = (float)js->valuedouble;
+    js = cJSON_GetArrayLastItem(node, 9, "equityReturn");
+    fundInfo[fund_idx].histroy[HISTROY_NUM - 9] = (float)js->valuedouble;
+    js = cJSON_GetArrayLastItem(node, 10, "equityReturn");
+    fundInfo[fund_idx].histroy[HISTROY_NUM - 10] = (float)js->valuedouble;
+    free(src_js);
+
+    //get stockCodes data
+    char *stock_js = malloc(120);
+    memset(stock_js, 0, 120);
     num = curlDataToJson(res_buf, stock_js, 1, "stockCodes");
-    if (!num) {
-        LOGD("%s curl stock data abnormal\n", code);
-        free(src_js);
+    //LOGD("%d\n", num);
+
+    //need to clear res_buf, or effect next curl data
+    memset(res_buf, 0, shift);
+    shift = 0;
+    if (num < 3) {
+        LOGD("%s curl stock data NULL\n", code);
         free(stock_js);
         return;
     }
-    //node = JsonParse_objectInArray(stock_js, NULL);
-    //JsonParse_ItemInArray(node, 1);
-    memset(res_buf, 0, shift);
-    shift = 0;
-    node = JsonParse_objectInArray(src_js, "equityReturn");
-    js = cJSON_GetArrayLastItem(node, 1, "equityReturn");
-    fundInfo[fund_idx].histroy[6] = (float)js->valuedouble;
-    js = cJSON_GetArrayLastItem(node, 2, "equityReturn");
-    fundInfo[fund_idx].histroy[5] = (float)js->valuedouble;
-    js = cJSON_GetArrayLastItem(node, 3, "equityReturn");
-    fundInfo[fund_idx].histroy[4] = (float)js->valuedouble;
-    js = cJSON_GetArrayLastItem(node, 4, "equityReturn");
-    fundInfo[fund_idx].histroy[3] = (float)js->valuedouble;
-    js = cJSON_GetArrayLastItem(node, 5, "equityReturn");
-    fundInfo[fund_idx].histroy[2] = (float)js->valuedouble;
-    js = cJSON_GetArrayLastItem(node, 6, "equityReturn");
-    fundInfo[fund_idx].histroy[1] = (float)js->valuedouble;
-    js = cJSON_GetArrayLastItem(node, 7, "equityReturn");
-    fundInfo[fund_idx].histroy[0] = (float)js->valuedouble;
-    free(src_js);
+
+    node = JsonParse_objectInArray(stock_js, NULL);
+    int i = 0;
+    for (i; i < 10 ; i++) {
+        js = JsonParse_ItemInArray(node, i);
+        memcpy(fundInfo[fund_idx].Stock_code[i], js->valuestring,strlen(js->valuestring));
+        //LOGD("%s\t", fundInfo[fund_idx].Stock_code[i]);
+    }
+    free(stock_js);
+
 }
 
 void fundGetInfoByCode(CURL *curl, char* code) {
@@ -303,7 +323,6 @@ void fundGetInfo(CURL *curl) {
 void fundInitFromXml(fundInfo_s *a, CURL *curl, int num) {
     int i;
     for(i = 0; i < num; i++) {
-    LOG;
         if(strlen((a+i)->f_code) != 6)
             continue;
         fundInitByCode(curl, (a+i)->f_code, i);
@@ -343,11 +362,10 @@ void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
 
 
         printf(NONE);
-        printf("%5.4f  ", (a+i)->bid_price);
-        printf("%8.2f  ", (a+i)->holders);
-        printf("%5.1f\t", (a+i)->holders * ((a+i)->l_val - (a+i)->bid_price));
-        printf("%8s  ", (a+i)->status);
-        for(j = 0; j < 7; j++) {
+        printf("%8.2f  \t", (a+i)->holders);
+        printf("%8s\n", (a+i)->status);
+        printf("\t\t");
+        for(j = 0; j < 10; j++) {
             if ((a+i)->histroy[j] > 0)
                 if ((a+i)->histroy[j] > 1)
                     printf(LIGHT_RED"+"NONE);
@@ -359,8 +377,10 @@ void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
                 else
                     printf(GREEN"-"NONE);
         }
+        printf("\t\t\t\t%5.4f", (a+i)->bid_price);
+        printf("\t\t\t%4d\t", (int)((a+i)->holders * ((a+i)->l_val - (a+i)->bid_price)));
         printf("\n");
-        invert = !invert;
+        //invert = !invert;
 
     }
     fundPriSummart();
@@ -375,7 +395,7 @@ void fundInfopri(fundInfo_s *a) {
 
 int main(int argc, char *argv[])
 {
-    LOGD("%ld\n", Get_time());
+    Get_time();
     CURL *curl;
 	CURLcode res2;
 	static char str[20480];

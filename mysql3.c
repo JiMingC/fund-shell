@@ -12,6 +12,12 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName){
     return 0;
 }
 
+int sql3_insert(int ID, char *fs_code ) {
+
+    char *sql;
+    //sprintf(sql, "INSERT INTO FS_DATE VALUES (%d, '%s', %.1f, %.1f, %.1f)", ID, date, get, get_max, get_min);
+}
+
 int sql3_test() {
     sqlite3 *db;
     char *zErrMsg = 0;
@@ -28,12 +34,12 @@ int sql3_test() {
     }
 
     /* Create SQL statement */
-    sql = "CREATE TABLE COMPANY("  \
+    sql = "CREATE TABLE FS_DATE("  \
             "ID INT PRIMARY KEY     NOT NULL," \
-            "NAME           TEXT    NOT NULL," \
-            "AGE            INT     NOT NULL," \
-            "ADDRESS        CHAR(50)," \
-            "SALARY         REAL );";
+            "DATE           TEXT ," \
+            "TOTAL-GET      REAL ," \
+            "TOTAL-GET-MAX  REAL ," \
+            "TOTAL-GET-MIN  REAL );";
 
     /* Execute SQL statement */
     rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);

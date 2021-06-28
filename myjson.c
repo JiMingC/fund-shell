@@ -51,6 +51,9 @@ cJSON* JsonParse_objectInArray(char* buf, char* name)
     cJSON *tnode = NULL;
     
     node = cJSON_Parse(buf);
+    if (node == NULL) {
+        return NULL;
+    }
 #if 0
     int size = cJSON_GetArraySize(node);
     cJSON *sub_json;
@@ -82,7 +85,7 @@ cJSON* JsonParse_ItemInArray(cJSON* p, int idx) {
         js = cJSON_GetArrayItem(p, idx);
         switch(js->type) {
             case cJSON_String:
-                LOGD("%d is %lf\n", idx,js->valuestring);
+//                LOGD("%d is %lf\n", idx,js->valuestring);
                 break;
         }
     }

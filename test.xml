@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fund>
     <fnode>
-        <name>鹏华国证钢铁行业指数(LOF)</name>
-        <code>502023</code>
-        <holders>596.30</holders>
-        <status></status>
-        <bid-price>1.6770</bid-price>
-    </fnode>
-    <fnode>
         <name>中欧创业板两年定开混合C</name>
         <code>009791</code>
         <holders>5000.13</holders>
@@ -22,6 +15,13 @@
         <bid-price>1.0000</bid-price>
     </fnode>
     <fnode>
+        <name>鹏华国证钢铁行业指数(LOF)</name>
+        <code>502023</code>
+        <holders>0</holders>
+        <status></status>
+        <bid-price>0</bid-price>
+    </fnode>
+    <fnode>
         <name>景顺长城新兴成长混合</name>
         <code>260108</code>
         <holders>976.07</holders>
@@ -33,12 +33,12 @@
         <code>007349</code>
         <holders>1334.93</holders>
         <status></status>
-        <bid-price>2.1619</bid-price>
+        <bid-price>2.2619</bid-price>
     </fnode>
     <fnode>
         <name>华夏国证半导体芯片ETF联接C</name>
         <code>008888</code>
-        <holders>2643.27</holders>
+        <holders>1321.63</holders>
         <status>ADDED</status>
         <bid-price>1.1350</bid-price>
     </fnode>
@@ -52,9 +52,9 @@
     <fnode>
         <name>创金合信科技成长股票A</name>
         <code>005495</code>
-        <holders>539.88</holders>
-        <status></status>
-        <bid-price>1.8523</bid-price>
+        <holders>0</holders>
+        <status>准备下车</status>
+        <bid-price>0</bid-price>
     </fnode>
     <fnode>
         <name>华夏中证5G通信主题ETF联接A</name>
@@ -80,9 +80,9 @@
     <fnode>
         <name>招商中证白酒指数(LOF)A</name>
         <code>161725</code>
-        <holders>1396.39</holders>
+        <holders>2086.35</holders>
         <status>CHANGE</status>
-        <bid-price>1.5243</bid-price>
+        <bid-price>1.4995</bid-price>
     </fnode>
     <fnode>
         <name>国泰国证有色金属行业指数(LOF)</name>
@@ -94,7 +94,7 @@
     <fnode>
         <name>前海开源沪港深农业混合</name>
         <code>164403</code>
-        <holders>601.87</holders>
+        <holders>973.29</holders>
         <status></status>
         <bid-price>1.6439</bid-price>
     </fnode>
@@ -120,18 +120,11 @@
         <bid-price>0</bid-price>
     </fnode>
     <fnode>
-        <name>兴全合宜混合(LOF)C</name>
-        <code>005491</code>
-        <holders>0</holders>
-        <status>ALL-OUT</status>
-        <bid-price>0</bid-price>
-    </fnode>
-    <fnode>
         <name>汇添富中证精准医疗主题指数A(LOF)</name>
         <code>501005</code>
-        <holders>0</holders>
+        <holders>1115.18</holders>
         <status>ADDING</status>
-        <bid-price>0</bid-price>
+        <bid-price>1.7934</bid-price>
     </fnode>
     <fnode>
         <name>易方达国防军工混合</name>
@@ -148,45 +141,10 @@
         <bid-price>0</bid-price>
     </fnode>
     <fnode>
-        <name></name>
-        <code>007465</code>
-        <holders>0</holders>
+        <name>博时裕益灵活配置混合</name>
+        <code>000219</code>
+        <holders>388.22</holders>
         <status>CHANGE</status>
-        <bid-price>0</bid-price>
-    </fnode>
-    <fnode>
-        <name></name>
-        <code>005827</code>
-        <holders>0</holders>
-        <status>CHANGE</status>
-        <bid-price></bid-price>
-    </fnode>
-    <fnode>
-        <name></name>
-        <code>002190</code>
-        <holders>0</holders>
-        <status>CHANGE</status>
-        <bid-price>0</bid-price>
-    </fnode>
-    <fnode>
-        <name></name>
-        <code>000689</code>
-        <holders>0</holders>
-        <status>CHANGE</status>
-        <bid-price>0</bid-price>
-    </fnode>
-    <fnode>
-        <name></name>
-        <code>005940</code>
-        <holders>0</holders>
-        <status>CHANGE</status>
-        <bid-price>0</bid-price>
-    </fnode>
-    <fnode>
-        <name></name>
-        <code>320007</code>
-        <holders>0</holders>
-        <status>CHANGE</status>
-        <bid-price>0</bid-price>
+        <bid-price>2.5759</bid-price>
     </fnode>
 </fund>
