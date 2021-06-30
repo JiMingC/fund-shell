@@ -97,6 +97,9 @@ int fundGetObjFromBuf(char* curl_data, char* obj_str, char *obj_val, short Opt) 
     return num;
 }
 
+/*
+ *  Opt 0:funddata 1:stockcode/price 2:stockcodedata
+ */
 int curlDataToJson(char* src_buf, char* json_out, int Opt, char* obj_str) {
     if (Opt == 0) {
         char *ptr = src_buf;
@@ -116,6 +119,23 @@ int curlDataToJson(char* src_buf, char* json_out, int Opt, char* obj_str) {
         return num;
     } else if (Opt == 1) {
         return fundGetObjFromBuf(src_buf, obj_str, json_out, 0);
+    } else if (Opt == 2) {
+        char *ptr = src_buf;
+        char *end = NULL;
+        ptr += 20;
+        if (*ptr == '\0')
+            return 0;
+        end = ptr;
+        int num = 0;
+        while(*end != ';') {
+            end++;
+            num++;
+        }
+        num--;
+        memset(json_out, 0, num);
+        memcpy(json_out, ptr, num);
+        return num;
+        
     }
 }
 
@@ -159,7 +179,7 @@ void fundGetInfo(char *buf, int len) {
 }
 #endif
 
-int fundGetCurlDate(CURL *curl, char* curl_addr) {
+int fundGetCurlData(CURL *curl, char* curl_addr) {
     if (!curl)
         return 1;
     static char str[20480];
@@ -173,11 +193,35 @@ int fundGetCurlDate(CURL *curl, char* curl_addr) {
     return 0;
 }
 
+void fundInitStockData(CURL *curl, char* code, int fund_idx) {
+return 0;
+    char curl_addr[2048] = {0};
+    int i = 0;
+
+    for (i; i < 10; i++) {
+        memset(curl_addr, 0, 2048);
+        LOGD("%s\n", fundInfo[fund_idx].Stock_code[i]);
+        if (fundInfo[fund_idx].Stock_code[i][6] == '1') {
+            fundInfo[fund_idx].Stock_code[i][6] = '\0';
+            sprintf(curl_addr, "http://hq.sinajs.cn/list=sh%s", fundInfo[fund_idx].Stock_code[i]);
+        } else if (fundInfo[fund_idx].Stock_code[i][6] == '2') {
+            fundInfo[fund_idx].Stock_code[i][6] = '\0';
+            sprintf(curl_addr,  "http://hq.sinajs.cn/list=sz%s", fundInfo[fund_idx].Stock_code[i]);
+        }
+        LOGD("%s\n",  curl_addr);
+        fundGetCurlData(curl, curl_addr);
+        char *src_js = malloc(2000);
+        int num = curlDataToJson(res_buf, src_js, 2, NULL);
+        LOGD("%d\t %s\n", num, curl_addr);
+        LOGD("%s\n", src_js);
+    }
+}
+
 void fundInitByCode(CURL *curl, char* code, int fund_idx) {
     cJSON *js, *node;
     char curl_addr[2048] = {0};
     sprintf(curl_addr, "http://fund.eastmoney.com/pingzhongdata/%s.js?v=20160518155842", code);
-    fundGetCurlDate(curl, curl_addr);
+    fundGetCurlData(curl, curl_addr);
     char *src_js = malloc(shift);
     int num = curlDataToJson(res_buf, src_js, 1, "Data_netWorthTrend");
     if (!num) {
@@ -240,7 +284,7 @@ void fundGetInfoByCode(CURL *curl, char* code) {
     char curl_addr[2048] = {0};
     //double a, b, c;
     sprintf(curl_addr, "http://fundgz.1234567.com.cn/js/%s.js?rt=1463558676006", code);
-    fundGetCurlDate(curl, curl_addr);
+    fundGetCurlData(curl, curl_addr);
     char * src_js = malloc(shift);
     int num = curlDataToJson(res_buf, src_js, 0, NULL);
     memset(res_buf, 0, shift);
@@ -326,6 +370,7 @@ void fundInitFromXml(fundInfo_s *a, CURL *curl, int num) {
         if(strlen((a+i)->f_code) != 6)
             continue;
         fundInitByCode(curl, (a+i)->f_code, i);
+        fundInitStockData(curl, (a+i)->f_code, i);
     }
 }
 

@@ -38,7 +38,7 @@
     <fnode>
         <name>华夏国证半导体芯片ETF联接C</name>
         <code>008888</code>
-        <holders>1321.63</holders>
+        <holders>881.09</holders>
         <status>ADDED</status>
         <bid-price>1.1350</bid-price>
     </fnode>
@@ -101,16 +101,16 @@
     <fnode>
         <name>富国沪深300指数增强</name>
         <code>100038</code>
-        <holders>682.24</holders>
+        <holders>0</holders>
         <status></status>
-        <bid-price>2.1986</bid-price>
+        <bid-price>0</bid-price>
     </fnode>
     <fnode>
         <name>易方达竞争优势企业混合A</name>
         <code>010198</code>
-        <holders>2321.88</holders>
+        <holders>0</holders>
         <status></status>
-        <bid-price>0.9960</bid-price>
+        <bid-price>0</bid-price>
     </fnode>
     <fnode>
         <name>汇添富中证新能源汽车C</name>
@@ -122,7 +122,7 @@
     <fnode>
         <name>汇添富中证精准医疗主题指数A(LOF)</name>
         <code>501005</code>
-        <holders>1115.18</holders>
+        <holders>557.59</holders>
         <status>ADDING</status>
         <bid-price>1.7934</bid-price>
     </fnode>
