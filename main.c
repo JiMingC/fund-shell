@@ -122,7 +122,7 @@ int curlDataToJson(char* src_buf, char* json_out, int Opt, char* obj_str) {
     } else if (Opt == 2) {
         char *ptr = src_buf;
         char *end = NULL;
-        ptr += 20;
+        //ptr += 20;
         if (*ptr == '\0')
             return 0;
         end = ptr;
@@ -131,7 +131,7 @@ int curlDataToJson(char* src_buf, char* json_out, int Opt, char* obj_str) {
             end++;
             num++;
         }
-        num--;
+        //num--;
         memset(json_out, 0, num);
         memcpy(json_out, ptr, num);
         return num;
@@ -193,13 +193,67 @@ int fundGetCurlData(CURL *curl, char* curl_addr) {
     return 0;
 }
 
+int fundStockDataparse(char* src_data, int fund_idx, int stock_idx) {
+    char data[38][50];
+    memset(data, 0, 38*50);
+    LOGD("%s\n", src_data);
+    int i = 0;
+    const char s[2] = ",";
+    if (src_data == NULL)
+        return 1;
+
+    int step = 0;
+    if (strstr(src_data, "hk"))
+        step = 1;
+    char *token;
+    token = strtok(src_data+20, s);
+    while (token != NULL) {
+        memcpy(data[i], token, strlen(token));
+        i++;
+        token = strtok(NULL, s);
+    }
+    int j;
+    for (j = 0; j < i; j++) {
+        
+    //    LOGD("%s\n", data[j]);
+    }
+    //LOGD("%s\n", data[0]+1);
+    char out[20] = {'\0'};
+    memset(fundInfo[fund_idx].stockInfo[stock_idx].s_name, 0, 50);
+    int len;
+    if (step)
+        len = gbk2utf8(data[1], fundInfo[fund_idx].stockInfo[stock_idx].s_name);
+    else
+        len = gbk2utf8(data[0]+1, fundInfo[fund_idx].stockInfo[stock_idx].s_name);
+
+    fundInfo[fund_idx].stockInfo[stock_idx].s_name[12] = '\0';
+
+    //printf("%s\t", fundInfo[fund_idx].stockInfo[stock_idx].s_name);
+    //memcpy(fundInfo[fund_idx].stockInfo[stock_idx].s_name, out, len);
+    fundInfo[fund_idx].stockInfo[stock_idx].c_open_val = atof(data[step + 1]);
+    fundInfo[fund_idx].stockInfo[stock_idx].l_close_val = atof(data[step + 2]);
+
+    fundInfo[fund_idx].stockInfo[stock_idx].c_val = atof(data[step + 3]);
+    fundInfo[fund_idx].stockInfo[stock_idx].max_val = atof(data[step + 4]);
+    fundInfo[fund_idx].stockInfo[stock_idx].min_val = atof(data[step + 5]);
+
+    float gain = (fundInfo[fund_idx].stockInfo[stock_idx].c_val - fundInfo[fund_idx].stockInfo[stock_idx].l_close_val)/
+                 fundInfo[fund_idx].stockInfo[stock_idx].l_close_val * 100;
+    fundInfo[fund_idx].stockInfo[stock_idx].gain = gain;
+    return 0;
+}
+
 void fundInitStockData(CURL *curl, char* code, int fund_idx) {
-return 0;
     char curl_addr[2048] = {0};
     int i = 0;
 
+    char *src_js = malloc(2000);
+    LOGD("%s[%s]:\n", fundInfo[fund_idx].f_name, fundInfo[fund_idx].f_code);
     for (i; i < 10; i++) {
+        memset(res_buf, 0, shift);
+        shift = 0;
         memset(curl_addr, 0, 2048);
+        memset(src_js, 0, 2000);
         LOGD("%s\n", fundInfo[fund_idx].Stock_code[i]);
         if (fundInfo[fund_idx].Stock_code[i][6] == '1') {
             fundInfo[fund_idx].Stock_code[i][6] = '\0';
@@ -207,14 +261,20 @@ return 0;
         } else if (fundInfo[fund_idx].Stock_code[i][6] == '2') {
             fundInfo[fund_idx].Stock_code[i][6] = '\0';
             sprintf(curl_addr,  "http://hq.sinajs.cn/list=sz%s", fundInfo[fund_idx].Stock_code[i]);
+        } else if (fundInfo[fund_idx].Stock_code[i][6] == '\0' && fundInfo[fund_idx].Stock_code[i][5] == '5'){
+            fundInfo[fund_idx].Stock_code[i][5] = '\0';
+            sprintf(curl_addr,  "http://hq.sinajs.cn/list=hk%s", fundInfo[fund_idx].Stock_code[i]);
+        } else {
+            return;
         }
-        LOGD("%s\n",  curl_addr);
+        LOGD("%s\n", curl_addr);
         fundGetCurlData(curl, curl_addr);
-        char *src_js = malloc(2000);
         int num = curlDataToJson(res_buf, src_js, 2, NULL);
-        LOGD("%d\t %s\n", num, curl_addr);
-        LOGD("%s\n", src_js);
+        fundStockDataparse(src_js, fund_idx, i);
     }
+    free(src_js);
+    memset(res_buf, 0, shift);
+    shift = 0;
 }
 
 void fundInitByCode(CURL *curl, char* code, int fund_idx) {
@@ -375,13 +435,11 @@ void fundInitFromXml(fundInfo_s *a, CURL *curl, int num) {
 }
 
 void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
-    printf("\n");
-    printf("\n");
-    printf("\n");
+    printf(CLEAR);
     fundPriTittle();
     int i = 0,j;
     char invert = 1;
-    for(i = 0; i < num; i++) {
+    for(i = 0; i < 10; i++) {
         if (invert)
             printf(COLOR1);
         //else
@@ -407,9 +465,9 @@ void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
 
 
         printf(NONE);
-        printf("%8.2f  \t", (a+i)->holders);
-        printf("%8s\n", (a+i)->status);
-        printf("\t\t");
+        printf("\t\t%8.2f", (a+i)->holders);
+        //printf("%8s\n", (a+i)->status);
+        printf("\t");
         for(j = 0; j < 10; j++) {
             if ((a+i)->histroy[j] > 0)
                 if ((a+i)->histroy[j] > 1)
@@ -422,12 +480,150 @@ void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
                 else
                     printf(GREEN"-"NONE);
         }
-        printf("\t\t\t\t%5.4f", (a+i)->bid_price);
-        printf("\t\t\t%4d\t", (int)((a+i)->holders * ((a+i)->l_val - (a+i)->bid_price)));
+        //printf("\t\t\t\t%5.4f", (a+i)->bid_price);
+        //printf("\t\t\t%4d\t", (int)((a+i)->holders * ((a+i)->l_val - (a+i)->bid_price)));
+        printf("\n");
+        printf("\t\t");
+
+        for (j = 0; j < 5; j++) {
+            if ((a+i)->stockInfo[j].s_name[0] == '\0')
+                continue;
+            printf("%s:", (a+i)->stockInfo[j].s_name);
+            if((a+i)->stockInfo[j].gain > 0) {
+                if ((a+i)->stockInfo[j].gain > 5)
+                    printf(LIGHT_RED"+");
+                else
+                    printf(RED"+");
+            }
+            else if ((a+i)->stockInfo[j].gain < 0) {
+                if ((a+i)->stockInfo[j].gain < -5)
+                    printf(LIGHT_GREEN);
+                else
+                    printf(GREEN);
+            }
+            printf("%.1f\t", (a+i)->stockInfo[j].gain);
+            printf(NONE);
+        }
+        printf("\n");
+        printf("\t\t");
+        for (j = 5; j < 10; j++) {
+            if ((a+i)->stockInfo[j].s_name[0] == '\0')
+                continue;
+            printf("%s:", (a+i)->stockInfo[j].s_name);
+            if((a+i)->stockInfo[j].gain > 0) {
+                if ((a+i)->stockInfo[j].gain > 5)
+                    printf(LIGHT_RED"+");
+                else
+                    printf(RED"+");
+            }
+            else if ((a+i)->stockInfo[j].gain < 0) {
+                if ((a+i)->stockInfo[j].gain < -5)
+                    printf(LIGHT_GREEN);
+                else
+                    printf(GREEN);
+            }
+            printf("%.1f\t", (a+i)->stockInfo[j].gain);
+            printf(NONE);
+        }
         printf("\n");
         //invert = !invert;
 
     }
+
+    fundPriSummart();
+
+    sleep(15);
+    printf(CLEAR);
+    fundPriTittle();
+    for(i = 10; i < num; i++) {
+        if (invert)
+            printf(COLOR1);
+        //else
+        //    printf(COLOR2);
+        //LOGD("%d %s\n", i, (a+i)->f_code);
+        if(strlen((a+i)->f_code) != 6)
+            continue;
+        fundGetInfoByCode(curl, (a+i)->f_code);
+        if((a+i)->g_val > 0 )
+                printf("+");
+        printf("%5.4f\t",  (a+i)->g_val);
+        
+        float tmp = (a+i)->g_val*(a+i)->holders;
+        printf("%4d", (int)tmp);
+
+        if ((a+i)->g_val > (a+i)->g_val_l) {
+            printf(LIGHT_RED" ^\t");
+        } else if ((a+i)->g_val < (a+i)->g_val_l) {
+            printf(LIGHT_GREEN" v\t");
+        } else {
+            printf("  \t");
+        }
+
+
+        printf(NONE);
+        printf("\t\t%8.2f", (a+i)->holders);
+        //printf("%8s\n", (a+i)->status);
+        printf("\t");
+        for(j = 0; j < 10; j++) {
+            if ((a+i)->histroy[j] > 0)
+                if ((a+i)->histroy[j] > 1)
+                    printf(LIGHT_RED"+"NONE);
+                else
+                    printf(RED"+"NONE);
+            else
+                if ((a+i)->histroy[j] < -1)
+                    printf(LIGHT_GREEN"-"NONE);
+                else
+                    printf(GREEN"-"NONE);
+        }
+        //printf("\t\t\t\t%5.4f", (a+i)->bid_price);
+        //printf("\t\t\t%4d\t", (int)((a+i)->holders * ((a+i)->l_val - (a+i)->bid_price)));
+        printf("\n");
+        printf("\t\t");
+        for (j = 0; j < 5; j++) {
+            if ((a+i)->stockInfo[j].s_name[0] == '\0')
+                continue;
+            printf("%s:", (a+i)->stockInfo[j].s_name);
+            if((a+i)->stockInfo[j].gain > 0) {
+                if ((a+i)->stockInfo[j].gain > 5)
+                    printf(LIGHT_RED"+");
+                else
+                    printf(RED"+");
+            }
+            else if ((a+i)->stockInfo[j].gain < 0) {
+                if ((a+i)->stockInfo[j].gain < -5)
+                    printf(LIGHT_GREEN);
+                else
+                    printf(GREEN);
+            }
+            printf("%.1f\t", (a+i)->stockInfo[j].gain);
+            printf(NONE);
+        }
+        printf("\n");
+        printf("\t\t");
+        for (j = 5; j < 10; j++) {
+            if ((a+i)->stockInfo[j].s_name[0] == '\0')
+                continue;
+            printf("%s:", (a+i)->stockInfo[j].s_name);
+            if((a+i)->stockInfo[j].gain > 0) {
+                if ((a+i)->stockInfo[j].gain > 5)
+                    printf(LIGHT_RED"+");
+                else
+                    printf(RED"+");
+            }
+            else if ((a+i)->stockInfo[j].gain < 0) {
+                if ((a+i)->stockInfo[j].gain < -5)
+                    printf(LIGHT_GREEN);
+                else
+                    printf(GREEN);
+            }
+            printf("%.1f\t", (a+i)->stockInfo[j].gain);
+            printf(NONE);
+        }
+        printf("\n");
+        //invert = !invert;
+    }
+ 
     fundPriSummart();
 }
 

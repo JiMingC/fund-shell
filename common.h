@@ -7,7 +7,17 @@
 
 #define HISTROY_NUM     10
 
-typedef struct fundInfo{
+typedef struct StockInfo {
+    char s_name[50];
+    float c_open_val;
+    float l_close_val;
+    float c_val;
+    float max_val;
+    float min_val;
+    float gain;
+}StockInfo_s;
+
+typedef struct fundInfo {
     char f_name[50];
     char f_code[30];
     float l_val;
@@ -21,7 +31,9 @@ typedef struct fundInfo{
     char status[30];
     float histroy[HISTROY_NUM];
     char Stock_code[10][30];
+    StockInfo_s stockInfo[10];
 }fundInfo_s;
+
 
 struct fundSet {
     int num;
