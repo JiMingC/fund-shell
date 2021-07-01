@@ -19,10 +19,10 @@ static int count = 1;
 //输出到字符串再打印到屏幕上
 ssize_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
 {
-	strcat(stream, (char *)ptr);
-	puts(stream);
-//    memcpy(data_buf, (char*)stream, size*nmemb);
-	return size*nmemb;
+    strcat(stream, (char *)ptr);
+    puts(stream);
+    //memcpy(data_buf, (char*)stream, size*nmemb);
+    return size*nmemb;
 }
  
 //输出到文件
