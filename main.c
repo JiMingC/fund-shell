@@ -658,20 +658,20 @@ int main(int argc, char *argv[])
 #if 0
 	if(curl2) 
 	{
-		//fp2=fopen("UsefullInfo.json", "w+");
-		//curl_easy_setopt(curl2, CURLOPT_URL, "http://fund.eastmoney.com/pingzhongdata/001186.js?v=20160518155842");//这是请求的url
-		curl_easy_setopt(curl2, CURLOPT_URL, "http://fundgz.1234567.com.cn/js/001186.js?rt=1463558676006");//这是请求的url
-		//curl_easy_setopt(curl2, CURLOPT_POSTFIELDS, "username=root@pam&password=nicaiba_88");//这是post的内容
-		//curl_easy_setopt(curl2, CURLOPT_HTTPHEADER, list);//若需要带头，则写进list
-		curl_easy_setopt(curl2, CURLOPT_SSL_VERIFYPEER, 0);//-k
-		curl_easy_setopt(curl2, CURLOPT_SSL_VERIFYHOST, 0);//-k
-		//curl_easy_setopt(curl2, CURLOPT_VERBOSE, 1);//这是请求过程的调试log
-		curl_easy_setopt(curl2, CURLOPT_WRITEFUNCTION, copy_data);//数据请求到以后的回调函数
-		curl_easy_setopt(curl2, CURLOPT_WRITEDATA, str);//选择输出到字符串
-		//curl_easy_setopt(curl2, CURLOPT_WRITEDATA, fp2);//选择输出到文件
-		res2 = curl_easy_perform(curl2);//这里是执行请求
-		curl_easy_cleanup(curl2);
-		//fclose(fp2);
+        //fp2=fopen("UsefullInfo.json", "w+");
+        //curl_easy_setopt(curl2, CURLOPT_URL, "http://fund.eastmoney.com/pingzhongdata/001186.js?v=20160518155842");//这是请求的url
+        curl_easy_setopt(curl2, CURLOPT_URL, "http://fundgz.1234567.com.cn/js/001186.js?rt=1463558676006");//这是请求的url
+        //curl_easy_setopt(curl2, CURLOPT_POSTFIELDS, "username=root@pam&password=nicaiba_88");//这是post的内容
+        //curl_easy_setopt(curl2, CURLOPT_HTTPHEADER, list);//若需要带头，则写进list
+        curl_easy_setopt(curl2, CURLOPT_SSL_VERIFYPEER, 0);//-k
+        curl_easy_setopt(curl2, CURLOPT_SSL_VERIFYHOST, 0);//-k
+        //curl_easy_setopt(curl2, CURLOPT_VERBOSE, 1);//这是请求过程的调试log
+        curl_easy_setopt(curl2, CURLOPT_WRITEFUNCTION, copy_data);//数据请求到以后的回调函数
+        curl_easy_setopt(curl2, CURLOPT_WRITEDATA, str);//选择输出到字符串
+        //curl_easy_setopt(curl2, CURLOPT_WRITEDATA, fp2);//选择输出到文件
+        res2 = curl_easy_perform(curl2);//这里是执行请求
+        curl_easy_cleanup(curl2);
+        //fclose(fp2);
 	}
 #endif
     //sql3_test();
