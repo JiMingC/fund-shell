@@ -3,6 +3,7 @@
 #include <curl/curl.h>
 #include <string.h>
 
+int f_num = 0;
 long int Get_time() {
     time_t t;
     time(&t);
@@ -149,14 +150,15 @@ void fundGetInfobyKey (char *str) {
 }
 
 void fundPriTittle(void) {
-    printf("Num\tCode\tname\t\t\t\tl_val\tc_val\t  gain\t  g_val\t get\tbid-pri  holders  total\t          histroy\n");
-    printf("---------------------------------------------------------------------------------------------------------------------------------\n");
+    //printf("Num\tCode\tname\t\t\t\tl_val\tc_val\t  gain\t  g_val\t get\tbid-pri  holders  total\t          histroy\n");
+    printf("Code_name\t\t\tl_val\tc_val\tg_val\t\t\t\t\tgain\t get\t holders\thistroy\n");
+    printf("-------------------------------------------------------------------------------------------------------------------------------------\n");
 }
 
 void fundPriSummart(void) {
     int i = 0;
     float total = 0;
-    for(i = 0; i < count; i++) {
+    for(i = 0; i < f_num; i++) {
         total += fundInfo[i].g_val*fundInfo[i].holders;
     }
     printf("today total gain:%f\n", total);
@@ -196,7 +198,6 @@ int fundGetCurlData(CURL *curl, char* curl_addr) {
 int fundStockDataparse(char* src_data, int fund_idx, int stock_idx) {
     char data[38][50];
     memset(data, 0, 38*50);
-    LOGD("%s\n", src_data);
     int i = 0;
     const char s[2] = ",";
     if (src_data == NULL)
@@ -239,7 +240,11 @@ int fundStockDataparse(char* src_data, int fund_idx, int stock_idx) {
 
     float gain = (fundInfo[fund_idx].stockInfo[stock_idx].c_val - fundInfo[fund_idx].stockInfo[stock_idx].l_close_val)/
                  fundInfo[fund_idx].stockInfo[stock_idx].l_close_val * 100;
+
     fundInfo[fund_idx].stockInfo[stock_idx].gain = gain;
+
+    if (gain < -90)
+        fundInfo[fund_idx].stockInfo[stock_idx].gain = 0;
     return 0;
 }
 
@@ -248,13 +253,13 @@ void fundInitStockData(CURL *curl, char* code, int fund_idx) {
     int i = 0;
 
     char *src_js = malloc(2000);
-    LOGD("%s[%s]:\n", fundInfo[fund_idx].f_name, fundInfo[fund_idx].f_code);
+    //LOGD("%s[%s]:\n", fundInfo[fund_idx].f_name, fundInfo[fund_idx].f_code);
     for (i; i < 10; i++) {
         memset(res_buf, 0, shift);
         shift = 0;
         memset(curl_addr, 0, 2048);
         memset(src_js, 0, 2000);
-        LOGD("%s\n", fundInfo[fund_idx].Stock_code[i]);
+        //LOGD("%s\n", fundInfo[fund_idx].Stock_code[i]);
         if (fundInfo[fund_idx].Stock_code[i][6] == '1') {
             fundInfo[fund_idx].Stock_code[i][6] = '\0';
             sprintf(curl_addr, "http://hq.sinajs.cn/list=sh%s", fundInfo[fund_idx].Stock_code[i]);
@@ -267,7 +272,7 @@ void fundInitStockData(CURL *curl, char* code, int fund_idx) {
         } else {
             return;
         }
-        LOGD("%s\n", curl_addr);
+        //LOGD("%s\n", curl_addr);
         fundGetCurlData(curl, curl_addr);
         int num = curlDataToJson(res_buf, src_js, 2, NULL);
         fundStockDataparse(src_js, fund_idx, i);
@@ -354,21 +359,22 @@ void fundGetInfoByCode(CURL *curl, char* code) {
         free(src_js);
         return;
     }
-    printf("%3d\t", count);
+    //printf("%3d\t", count);
     js = JsonParse_object(src_js, "fundcode");
-    printf("%s\t", js->valuestring);
+    //printf("%s\t", js->valuestring);
     js = JsonParse_object(src_js, "name");
-    printf("%-35s\t", js->valuestring);
+    //printf("%-35s\t", js->valuestring);
     js = JsonParse_object(src_js, "dwjz");
     fundInfo[count - 1].l_val = (float) atof(js->valuestring);
-    printf("%s\t", js->valuestring);
+    //printf("%s\t", js->valuestring);
     js = JsonParse_object(src_js, "gsz");
     fundInfo[count - 1].c_val = (float) atof(js->valuestring);
-    printf("%s\t", js->valuestring);
+    //printf("%s\t\t\t\t\t", js->valuestring);
     fundInfo[count - 1].g_val_l = fundInfo[count - 1].g_val;
     fundInfo[count - 1].g_val = fundInfo[count - 1].c_val - fundInfo[count - 1].l_val;
     js = JsonParse_object(src_js, "gszzl");
     float gszzl = (float) atof(js->valuestring);
+    /*
     if(gszzl > 0)
         if (gszzl > 1)
             printf(LIGHT_RED"+");
@@ -379,12 +385,11 @@ void fundGetInfoByCode(CURL *curl, char* code) {
             printf(LIGHT_GREEN);
         else
             printf(GREEN);
-    printf("%s%%\t", js->valuestring);
-    //js = JsonParse_object(src_js, "gztime");
-    //printf("%s\t", js->valuestring+11);
+    */
+    fundInfo[count - 1].gain = (float)atof(js->valuestring);
+    //printf("%s%%  ", js->valuestring);
     count++;
     free(src_js);
-    //printf("\n");
 }
 
 char* code[30] = {
@@ -434,7 +439,131 @@ void fundInitFromXml(fundInfo_s *a, CURL *curl, int num) {
     }
 }
 
+void fundPriInfoPart2(fundInfo_s *a, int i) {
+    int j;
+    printf("%s\t", (a+i)->f_code);
+    for (j = 0; j < 10; j++) {
+        if ((a+i)->stockInfo[j].s_name[0] == '\0') {
+            if ((j+1) == 5) {
+                printf("\n");
+                printf("\t");
+            }
+            continue;
+        }
+        printf("%s:", (a+i)->stockInfo[j].s_name);
+        if((a+i)->stockInfo[j].gain > 0) {
+            if ((a+i)->stockInfo[j].gain > 5)
+                printf(LIGHT_RED"+");
+            else
+                printf(RED"+");
+        }
+        else if ((a+i)->stockInfo[j].gain < 0) {
+            if ((a+i)->stockInfo[j].gain < -5)
+                printf(LIGHT_GREEN);
+            else
+                printf(GREEN);
+        }
+        printf("%.1f%%\t", (a+i)->stockInfo[j].gain);
+        printf(NONE);
+
+        if ((j+1) == 5) {
+            printf("\n");
+            printf("\t");
+        }
+    }
+    printf("\n");
+}
+
+void fundPriInfoPart1(fundInfo_s *a, int i) {
+    char pribuf[1024] = {};
+    int j;
+    memset(pribuf, 0, 1024);
+
+    //--------------------------------LINE 1 BEGIN
+    printf(COLOR1);
+
+    float tmp = (a+i)->g_val*(a+i)->holders;
+    sprintf(pribuf, "%-38s\t%.3f\t%.3f\t%4.3f\t\t\t\t\t", (a+i)->f_name, 
+                                      (a+i)->l_val, 
+                                      (a+i)->c_val,
+                                      (a+i)->g_val);
+    
+    printf(pribuf);
+    float gszzl = (a+i)->g_val;
+    if(gszzl > 0)
+        if (gszzl > 1)
+            printf(LIGHT_RED"+");
+        else
+            printf(RED"+");
+    else
+        if (gszzl < -1)
+            printf(LIGHT_GREEN);
+        else
+            printf(GREEN);
+
+    printf("%4.2f%%  %3d", (a+i)->gain, (int)tmp);
+    if ((a+i)->g_val > (a+i)->g_val_l) {
+        printf(LIGHT_RED" ^");
+    } else if ((a+i)->g_val < (a+i)->g_val_l) {
+        printf(LIGHT_GREEN" v");
+    } else {
+        printf("  ");
+    }
+    //printf("  ");
+    printf(NONE);
+
+    printf("\t%8.2f\t", (a+i)->holders);
+    for(j = 0; j < 10; j++) {
+        if ((a+i)->histroy[j] > 0)
+            if ((a+i)->histroy[j] > 1)
+                printf(LIGHT_RED"+"NONE);
+            else
+                printf(RED"+"NONE);
+        else
+            if ((a+i)->histroy[j] < -1)
+                printf(LIGHT_GREEN"-"NONE);
+            else
+                printf(GREEN"-"NONE);
+    }
+
+    printf("\n");
+    //--------------------------------LINE 1 END
+}
+
 void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
+#if 1
+    printf(CLEAR);
+
+    fundPriTittle();
+    int i, j;
+    for (i = 0; i < f_num; i++) {
+        if(strlen((a+i)->f_code) != 6)
+            return;
+        fundGetInfoByCode(curl, (a+i)->f_code);
+        
+        fundPriInfoPart1(a, i);
+        fundPriInfoPart2(a, i);
+        if((i+1)%10 == 0) {
+            fundPriSummart();
+            sleep(25);
+            printf(CLEAR);
+            fundPriTittle();
+        }
+
+        if ((i + 1 ) == f_num) {
+            for (j = 0; j < 10 - (f_num%10); j++) {
+                printf("\n");
+                printf("\n");
+                printf("\n");
+            }
+            fundPriSummart();
+            sleep(15);
+            printf(CLEAR);
+        }
+            
+    }
+
+#else
     printf(CLEAR);
     fundPriTittle();
     int i = 0,j;
@@ -450,24 +579,24 @@ void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
         fundGetInfoByCode(curl, (a+i)->f_code);
         if((a+i)->g_val > 0 )
                 printf("+");
-        printf("%5.4f\t",  (a+i)->g_val);
+        printf("%5.4f  ",  (a+i)->g_val);
         
         float tmp = (a+i)->g_val*(a+i)->holders;
         printf("%4d", (int)tmp);
 
         if ((a+i)->g_val > (a+i)->g_val_l) {
-            printf(LIGHT_RED" ^\t");
+            printf(LIGHT_RED" ^");
         } else if ((a+i)->g_val < (a+i)->g_val_l) {
-            printf(LIGHT_GREEN" v\t");
+            printf(LIGHT_GREEN" v");
         } else {
-            printf("  \t");
+            printf("  ");
         }
 
 
         printf(NONE);
-        printf("\t\t%8.2f", (a+i)->holders);
+        printf("\t%8.2f", (a+i)->holders);
         //printf("%8s\n", (a+i)->status);
-        printf("\t");
+        printf("  ");
         for(j = 0; j < 10; j++) {
             if ((a+i)->histroy[j] > 0)
                 if ((a+i)->histroy[j] > 1)
@@ -546,24 +675,24 @@ void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
         fundGetInfoByCode(curl, (a+i)->f_code);
         if((a+i)->g_val > 0 )
                 printf("+");
-        printf("%5.4f\t",  (a+i)->g_val);
+        printf("%5.4f  ",  (a+i)->g_val);
         
         float tmp = (a+i)->g_val*(a+i)->holders;
         printf("%4d", (int)tmp);
 
         if ((a+i)->g_val > (a+i)->g_val_l) {
-            printf(LIGHT_RED" ^\t");
+            printf(LIGHT_RED" ^");
         } else if ((a+i)->g_val < (a+i)->g_val_l) {
-            printf(LIGHT_GREEN" v\t");
+            printf(LIGHT_GREEN" v");
         } else {
-            printf("  \t");
+            printf("  ");
         }
 
 
         printf(NONE);
-        printf("\t\t%8.2f", (a+i)->holders);
+        printf("\t%8.2f", (a+i)->holders);
         //printf("%8s\n", (a+i)->status);
-        printf("\t");
+        printf("  ");
         for(j = 0; j < 10; j++) {
             if ((a+i)->histroy[j] > 0)
                 if ((a+i)->histroy[j] > 1)
@@ -625,6 +754,7 @@ void fundGetInfoFromXml(fundInfo_s *a, CURL *curl, int num) {
     }
  
     fundPriSummart();
+#endif
 }
 
 void fundInfopri(fundInfo_s *a) {
@@ -643,14 +773,14 @@ int main(int argc, char *argv[])
 	res2 = curl_global_init(CURL_GLOBAL_ALL);
 	curl = curl_easy_init();
     //fundInfo = calloc(30, sizeof(fundInfo));
-    int f_num = xmlLoadInfo(fundInfo);
+    f_num = xmlLoadInfo(fundInfo);
     printf("Find %d funders, initing...\n", f_num);
     //fundInfopri(fundInfo);
     fundInitFromXml(fundInfo, curl, f_num);
     printf("Finish initing\n");
     while(1) {
         fundGetInfoFromXml(fundInfo, curl, f_num);
-        sleep(15);
+        //sleep(15);
         count = 1;
     }
     //fundGetInfo(curl);

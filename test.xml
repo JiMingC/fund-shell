@@ -38,7 +38,7 @@
     <fnode>
         <name>华夏国证半导体芯片ETF联接C</name>
         <code>008888</code>
-        <holders>881.09</holders>
+        <holders>440.54</holders>
         <status>ADDED</status>
         <bid-price>1.1350</bid-price>
     </fnode>
@@ -52,9 +52,9 @@
     <fnode>
         <name>创金合信科技成长股票A</name>
         <code>005495</code>
-        <holders>0</holders>
+        <holders>483.82</holders>
         <status>准备下车</status>
-        <bid-price>0</bid-price>
+        <bid-price>2.0638</bid-price>
     </fnode>
     <fnode>
         <name>华夏中证5G通信主题ETF联接A</name>
@@ -120,18 +120,18 @@
         <bid-price>0</bid-price>
     </fnode>
     <fnode>
-        <name>汇添富中证精准医疗主题指数A(LOF)</name>
+        <name>汇添富中证精准医疗指数A(LOF)</name>
         <code>501005</code>
-        <holders>557.59</holders>
+        <holders>0</holders>
         <status>ADDING</status>
-        <bid-price>1.7934</bid-price>
+        <bid-price>0</bid-price>
     </fnode>
     <fnode>
         <name>易方达国防军工混合</name>
         <code>001475</code>
-        <holders>0</holders>
+        <holders>323.77</holders>
         <status>ALL_OUT</status>
-        <bid-price>0</bid-price>
+        <bid-price>1.49</bid-price>
     </fnode>
     <fnode>
         <name>万家品质生活灵活配置混合</name>
@@ -146,5 +146,61 @@
         <holders>388.22</holders>
         <status>CHANGE</status>
         <bid-price>2.5759</bid-price>
+    </fnode>
+    <fnode>
+        <name>鹏华中证传媒指数(LOF)</name>
+        <code>160629</code>
+        <holders>2042.54</holders>
+        <status></status>
+        <bid-price>0.9780</bid-price>
+    </fnode>
+    <fnode>
+        <name>富国中证煤炭指数(LOF)</name>
+        <code>161032</code>
+        <holders>775.19</holders>
+        <status></status>
+        <bid-price>1.2900</bid-price>
+    </fnode>
+    <fnode>
+        <name>中欧阿尔法混合C</name>
+        <code>009777</code>
+        <holders></holders>
+        <status></status>
+        <bid-price></bid-price>
+    </fnode>
+    <fnode>
+        <name></name>
+        <code>007465</code>
+        <holders></holders>
+        <status></status>
+        <bid-price></bid-price>
+    </fnode>
+    <fnode>
+        <name></name>
+        <code>005827</code>
+        <holders></holders>
+        <status></status>
+        <bid-price></bid-price>
+    </fnode>
+    <fnode>
+        <name></name>
+        <code>002190</code>
+        <holders></holders>
+        <status></status>
+        <bid-price></bid-price>
+    </fnode>
+    <fnode>
+        <name></name>
+        <code>000689</code>
+        <holders></holders>
+        <status></status>
+        <bid-price></bid-price>
+    </fnode>
+    <fnode>
+        <name></name>
+        <code>003096</code>
+        <holders></holders>
+        <status></status>
+        <bid-price></bid-price>
     </fnode>
 </fund>
