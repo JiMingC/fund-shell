@@ -1,4 +1,5 @@
 #include "common.h"
+#include "myxml.h"
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 //refer http://blog.chinaunix.net/uid-25695950-id-3921541.html

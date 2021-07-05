@@ -2,6 +2,8 @@
 #include "common.h"
 #include <curl/curl.h>
 #include <string.h>
+#include "myxml.h"
+#include <unistd.h>
 
 int f_num = 0;
 long int Get_time() {
@@ -363,6 +365,8 @@ void fundGetInfoByCode(CURL *curl, char* code) {
     js = JsonParse_object(src_js, "fundcode");
     //printf("%s\t", js->valuestring);
     js = JsonParse_object(src_js, "name");
+    if (fundInfo[count - 1].f_name[0] == '\0')
+        strcpy(fundInfo[count - 1].f_name, js->valuestring);
     //printf("%-35s\t", js->valuestring);
     js = JsonParse_object(src_js, "dwjz");
     fundInfo[count - 1].l_val = (float) atof(js->valuestring);
@@ -387,6 +391,7 @@ void fundGetInfoByCode(CURL *curl, char* code) {
             printf(GREEN);
     */
     fundInfo[count - 1].gain = (float)atof(js->valuestring);
+    fundInfo[count - 1].total = (int)(fundInfo[count - 1].holders * (fundInfo[count - 1].l_val - fundInfo[count - 1].bid_price));
     //printf("%s%%  ", js->valuestring);
     count++;
     free(src_js);
@@ -441,10 +446,13 @@ void fundInitFromXml(fundInfo_s *a, CURL *curl, int num) {
 
 void fundPriInfoPart2(fundInfo_s *a, int i) {
     int j;
+    //print code num for start
     printf("%s\t", (a+i)->f_code);
     for (j = 0; j < 10; j++) {
         if ((a+i)->stockInfo[j].s_name[0] == '\0') {
+            printf("\t");
             if ((j+1) == 5) {
+                printf("\t\t\t\t\t\t\t   [%4d]", (a+i)->total);
                 printf("\n");
                 printf("\t");
             }
@@ -467,6 +475,7 @@ void fundPriInfoPart2(fundInfo_s *a, int i) {
         printf(NONE);
 
         if ((j+1) == 5) {
+            printf("\t\t   [%4d]", (a+i)->total);
             printf("\n");
             printf("\t");
         }
@@ -488,7 +497,7 @@ void fundPriInfoPart1(fundInfo_s *a, int i) {
                                       (a+i)->c_val,
                                       (a+i)->g_val);
     
-    printf(pribuf);
+    printf("%s", pribuf);
     float gszzl = (a+i)->g_val;
     if(gszzl > 0)
         if (gszzl > 1)
