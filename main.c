@@ -255,13 +255,13 @@ void fundInitStockData(CURL *curl, char* code, int fund_idx) {
     int i = 0;
 
     char *src_js = malloc(2000);
-    //LOGD("%s[%s]:\n", fundInfo[fund_idx].f_name, fundInfo[fund_idx].f_code);
+    LOGD("%s[%s]:\n", fundInfo[fund_idx].f_name, fundInfo[fund_idx].f_code);
     for (i; i < 10; i++) {
         memset(res_buf, 0, shift);
         shift = 0;
         memset(curl_addr, 0, 2048);
         memset(src_js, 0, 2000);
-        //LOGD("%s\n", fundInfo[fund_idx].Stock_code[i]);
+        LOGD("%s\n", fundInfo[fund_idx].Stock_code[i]);
         if (fundInfo[fund_idx].Stock_code[i][6] == '1') {
             fundInfo[fund_idx].Stock_code[i][6] = '\0';
             sprintf(curl_addr, "http://hq.sinajs.cn/list=sh%s", fundInfo[fund_idx].Stock_code[i]);
@@ -440,7 +440,7 @@ void fundInitFromXml(fundInfo_s *a, CURL *curl, int num) {
         if(strlen((a+i)->f_code) != 6)
             continue;
         fundInitByCode(curl, (a+i)->f_code, i);
-        fundInitStockData(curl, (a+i)->f_code, i);
+        //fundInitStockData(curl, (a+i)->f_code, i);
     }
 }
 

@@ -1,4 +1,4 @@
-LIBS = -lm -lcurl -lsqlite3 -lxml2
+LIBS = -lm -lcurl -lsqlite3 -lxml2 -lncurses
 CC = gcc
 LD = gcc
 
